@@ -1,16 +1,18 @@
 package bssm.db.bssmgit.global.auth;
 
+import bssm.db.bssmgit.domain.user.domain.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UsersRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
