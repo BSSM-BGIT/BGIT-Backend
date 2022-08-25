@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.global.auth;
 
+import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
