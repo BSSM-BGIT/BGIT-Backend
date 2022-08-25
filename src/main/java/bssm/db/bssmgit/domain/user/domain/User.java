@@ -1,7 +1,10 @@
 package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.user.domain.type.Role;
+import bssm.db.bssmgit.global.exception.CustomException;
+import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -55,4 +58,24 @@ public class User {
         this.bsmToken = bsmToken;
         this.githubId = githubId;
     }
+
+    // auth
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void matchedPassword(PasswordEncoder passwordEncoder, User user, String password) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
+        }
+    }
+
+    public void addUserAuthority() {
+        this.role = Role.ROLE_USER;
+    }
+
+    public void addAdmin() {
+        this.role = Role.ROLE_ADMIN;
+    }
+
 }
