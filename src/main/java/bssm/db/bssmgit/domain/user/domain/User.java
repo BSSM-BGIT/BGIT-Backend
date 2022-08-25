@@ -12,7 +12,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(length = 128)
     private String password;
@@ -43,7 +43,7 @@ public class User {
     private String githubId;
 
     @Builder
-    public User(int id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId) {
+    public User(Long id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId) {
         this.id = id;
         this.password = password;
         this.role = role;
