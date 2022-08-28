@@ -1,7 +1,7 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.UserRepository;
+import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.LoginRequestDto;
 import bssm.db.bssmgit.domain.user.web.dto.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;

@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.global.auth;
 
-import bssm.db.bssmgit.domain.user.domain.UserRepository;
+import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

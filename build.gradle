@@ -31,7 +31,10 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-	implementation group: 'org.kohsuke', name: 'github-api'
+	implementation group: 'org.kohsuke', name: 'github-api', version: '1.125'
+
+	implementation group: 'org.webjars', name: 'jquery', version: '3.3.1'
+	implementation group: 'org.webjars', name: 'bootstrap', version: '4.3.1'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
