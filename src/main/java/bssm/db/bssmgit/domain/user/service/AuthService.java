@@ -29,8 +29,22 @@ public class AuthService {
     private final RedisService redisService;
     private final UserService userService;
 
-    public TokenResponseDto OauthLogin(String authCode) throws IOException {
+    public TokenResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
+
+        final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
+        final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
+
+        return TokenResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public TokenResponseDto gitLogin(String authCode) throws IOException {
+        // TODO gitOauth 메서드 개발
+        User user = userService.gitOauth(authCode);
 
         final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
         final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());

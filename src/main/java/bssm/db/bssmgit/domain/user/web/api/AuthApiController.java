@@ -20,8 +20,14 @@ public class AuthApiController {
 
     @PostMapping("/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponseDto login(HttpServletRequest request) throws IOException {
-        return authService.OauthLogin(request.getHeader("authCode"));
+    public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
+        return authService.bsmLogin(request.getHeader("authCode"));
+    }
+
+    @PostMapping("/oauth/git")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponseDto loginGit(HttpServletRequest request) throws IOException {
+        return authService.gitLogin(request.getHeader("authCode"));
     }
 
     @DeleteMapping("/logout")
