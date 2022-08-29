@@ -32,11 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -53,17 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/users/**").permitAll()
-                .antMatchers("/api/users/refresh").permitAll()
-                .antMatchers("/api/free/find/**").permitAll()
-                .antMatchers("/api/free/comments/find/**").permitAll()
-                .antMatchers("/api/project/find/**").permitAll()
-                .antMatchers("/api/project/comments/find/**").permitAll()
-                .antMatchers("/api/major/find/**").permitAll()
-                .antMatchers("/api/major/comments/find/**").permitAll()
-                .antMatchers("/api/manager/find/**").permitAll()
+<<<<<<< HEAD
+                .antMatchers("/github").permitAll()
+                .antMatchers("/auth/login").permitAll()
+=======
+                .antMatchers("/auth/oauth/bsm").permitAll()
                 .antMatchers("/api/manager/**")
                 .access("hasRole('MANAGER') or hasRole('ADMIN')")
+>>>>>>> 095921dce283aa11487e1166f02fb826dc95fa1b
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailService, jwtValidateService),

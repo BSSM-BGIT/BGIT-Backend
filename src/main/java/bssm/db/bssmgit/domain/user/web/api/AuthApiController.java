@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -17,10 +18,10 @@ public class AuthApiController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping("/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponseDto login(@RequestBody @Valid LoginRequestDto request) {
-        return authService.login(request);
+    public TokenResponseDto login(HttpServletRequest request) throws IOException {
+        return authService.OauthLogin(request.getHeader("authCode"));
     }
 
     @DeleteMapping("/logout")
