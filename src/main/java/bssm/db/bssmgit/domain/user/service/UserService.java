@@ -1,11 +1,10 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.UserRepository;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
+import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
-import bssm.db.bssmgit.domain.user.web.dto.UserSignUpDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;

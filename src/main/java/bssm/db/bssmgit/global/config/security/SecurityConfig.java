@@ -48,14 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-<<<<<<< HEAD
                 .antMatchers("/github").permitAll()
                 .antMatchers("/auth/login").permitAll()
-=======
                 .antMatchers("/auth/oauth/bsm").permitAll()
                 .antMatchers("/api/manager/**")
                 .access("hasRole('MANAGER') or hasRole('ADMIN')")
->>>>>>> 095921dce283aa11487e1166f02fb826dc95fa1b
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailService, jwtValidateService),
