@@ -8,9 +8,14 @@ import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ResolvableType;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +41,12 @@ public class UserService {
     private String OAUTH_BSM_TOKEN_URL;
     @Value("${spring.oauth.bsm.url.resource}")
     private String OAUTH_BSM_RESOURCE_URL;
+
+    @Value("${spring.security.oauth2.client.registration.github.client-id}")
+    private String OAUTH_GIT_CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
+    private String OAUTH_GIT_CLIENT_SECRET;
 
     @Transactional
     private User signup(BsmOauthResourceDto dto, String bsmToken) {
@@ -91,4 +102,5 @@ public class UserService {
                 () -> signup(resourceDto, tokenResponseDto.getToken())
         );
     }
+
 }

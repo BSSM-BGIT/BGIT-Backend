@@ -1,14 +1,20 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.AuthService;
-import bssm.db.bssmgit.domain.user.web.dto.LoginRequestDto;
+import bssm.db.bssmgit.domain.user.service.UserService;
+import bssm.db.bssmgit.domain.user.web.dto.GitIdResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.TokenResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ import java.io.IOException;
 public class AuthApiController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
@@ -24,10 +31,20 @@ public class AuthApiController {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    @PostMapping("/oauth/git")
-    @ResponseStatus(HttpStatus.OK)
-    public TokenResponseDto loginGit(HttpServletRequest request) throws IOException {
-        return authService.gitLogin(request.getHeader("authCode"));
+    @GetMapping("/oauth/git")
+    public ResponseEntity loginGit(@AuthenticationPrincipal OAuth2User oAuth2User) throws IOException {
+
+        GitHub gitHub = new GitHubBuilder()
+                .withOAuthToken(oAuth2User.getName()).build();
+
+        GHUser user = gitHub.getUser(oAuth2User.getName());
+        System.out.println("user = " + user);
+
+        GitIdResponseDto dto = GitIdResponseDto.builder()
+                .id(user.getLogin())
+                .build();
+
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/logout")
