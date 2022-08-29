@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -17,10 +18,16 @@ public class AuthApiController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping("/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponseDto login(@RequestBody @Valid LoginRequestDto request) {
-        return authService.login(request);
+    public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
+        return authService.bsmLogin(request.getHeader("authCode"));
+    }
+
+    @PostMapping("/oauth/git")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponseDto loginGit(HttpServletRequest request) throws IOException {
+        return authService.gitLogin(request.getHeader("authCode"));
     }
 
     @DeleteMapping("/logout")
@@ -30,8 +37,10 @@ public class AuthApiController {
 
     @PutMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponseDto getNewAccessToken(@RequestHeader(value = "REFRESH-TOKEN") String refreshToken) {
+    public TokenResponseDto getNewAccessToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader("REFRESH-TOKEN");
         return authService.getNewAccessToken(refreshToken);
     }
+
 
 }

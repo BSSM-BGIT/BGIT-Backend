@@ -1,7 +1,7 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.UserRepository;
+import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.LoginRequestDto;
 import bssm.db.bssmgit.domain.user.web.dto.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
@@ -10,9 +10,12 @@ import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
+import com.nimbusds.oauth2.sdk.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 
@@ -24,17 +27,28 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtValidateService jwtValidateService;
     private final RedisService redisService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    public TokenResponseDto login(LoginRequestDto request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public TokenResponseDto bsmLogin(String authCode) throws IOException {
+        User user = userService.bsmOauth(authCode);
 
-        user.matchedPassword(passwordEncoder, user, request.getPassword());
+        final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
+        final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
-        final String accessToken = jwtTokenProvider.createAccessToken(request.getEmail());
-        final String refreshToken = jwtTokenProvider.createRefreshToken(request.getEmail());
-        redisService.setDataExpire(request.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
+        return TokenResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public TokenResponseDto gitLogin(String authCode) throws IOException {
+        // TODO gitOauth 메서드 개발
+        User user = userService.gitOauth(authCode);
+
+        final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
+        final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
         return TokenResponseDto.builder()
                 .accessToken(accessToken)
