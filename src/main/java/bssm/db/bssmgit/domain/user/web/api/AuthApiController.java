@@ -1,7 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.AuthService;
-import bssm.db.bssmgit.domain.user.service.UserService;
 import bssm.db.bssmgit.domain.user.web.dto.GitIdResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.TokenResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +17,18 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@RequestMapping("/auth")
 @RestController
 public class AuthApiController {
 
     private final AuthService authService;
-    private final UserService userService;
 
-    @PostMapping("/oauth/bsm")
+    @PostMapping("/auth/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    @GetMapping("/oauth/git")
+    @GetMapping("/auth/oauth/git")
     public ResponseEntity loginGit(@AuthenticationPrincipal OAuth2User oAuth2User) throws IOException {
 
         GitHub gitHub = new GitHubBuilder()
