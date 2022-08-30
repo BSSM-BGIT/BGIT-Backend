@@ -78,4 +78,8 @@ public class User {
         this.role = Role.ROLE_ADMIN;
     }
 
+    public void updateGitId(String githubId) {
+        this.githubId = githubId;
+    }
+
 }

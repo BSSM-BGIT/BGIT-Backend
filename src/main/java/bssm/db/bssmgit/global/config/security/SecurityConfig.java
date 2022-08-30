@@ -34,35 +34,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/webjars/**").permitAll()
-                )
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                )
-                .oauth2Login()
-                .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/oauth/**").permitAll()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/github/**").permitAll()
-                .antMatchers("/login/oauth2/code/github").permitAll()
-                .antMatchers("/api/manager/**")
-                .access("hasRole('MANAGER') or hasRole('ADMIN')")
+                .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailService, jwtValidateService),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
-                .oauth2Login()
-                .loginPage("/auth/github/**").permitAll()
-                .defaultSuccessUrl("/")
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
     }
 
 }

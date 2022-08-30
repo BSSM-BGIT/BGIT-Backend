@@ -19,12 +19,14 @@ public class AuthApiController {
 
     private final AuthService authService;
 
+    // http://bssm.kro.kr/oauth/login?clientId=4c81669f&redirectURI=http://localhost:8080/auth/oauth/bsm
     @PostMapping("/auth/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
+    // https://github.com/login/oauth/authorize?client_id=b87feaccd801817573ad&redirect_uri=http://localhost:8080/auth/github/callback
     @GetMapping("/auth/github/callback")
     public GitIdResponseDto getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
         URL url = new URL("https://github.com/login/oauth/access_token");

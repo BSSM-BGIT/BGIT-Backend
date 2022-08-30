@@ -13,6 +13,7 @@ import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.BufferedReader;
@@ -35,6 +36,7 @@ public class AuthService {
     private final RedisService redisService;
     private final UserService userService;
 
+    @Transactional
     public TokenResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
 
@@ -48,20 +50,7 @@ public class AuthService {
                 .build();
     }
 
-//    public TokenResponseDto gitLogin(String authCode) throws IOException {
-//        // TODO gitOauth 메서드 개발
-//        User user = userService.gitOauth();
-//
-//        final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
-//        final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
-//        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
-//
-//        return TokenResponseDto.builder()
-//                .accessToken(accessToken)
-//                .refreshToken(refreshToken)
-//                .build();
-//    }
-
+    @Transactional
     public void logout(String accessToken) {
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
@@ -69,6 +58,7 @@ public class AuthService {
         jwtTokenProvider.logout(user.getEmail(), accessToken);
     }
 
+    @Transactional
     public TokenResponseDto getNewAccessToken(String refreshToken) {
         jwtValidateService.validateRefreshToken(refreshToken);
 
@@ -78,6 +68,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public GitIdResponseDto access(String response, RedirectAttributes redirectAttributes) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> map = objectMapper.readValue(response, Map.class);
@@ -99,11 +90,17 @@ public class AuthService {
 
         System.out.println("gitInfo.get(\"login\") = " + gitInfo.get("login"));
 
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+
+        user.updateGitId(gitInfo.get("login"));
+
         return GitIdResponseDto.builder()
                 .id(gitInfo.get("login"))
                 .build();
     }
 
+    @Transactional
     public String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
         StringBuilder sb = new StringBuilder();
         if (responseCode == 200) {
