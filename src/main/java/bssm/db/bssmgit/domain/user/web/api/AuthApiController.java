@@ -3,20 +3,15 @@ package bssm.db.bssmgit.domain.user.web.api;
 import bssm.db.bssmgit.domain.user.service.AuthService;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitIdResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,7 +26,7 @@ public class AuthApiController {
     }
 
     @GetMapping("/auth/github/callback")
-    public String getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
+    public GitIdResponseDto getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
         URL url = new URL("https://github.com/login/oauth/access_token");
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -46,52 +41,10 @@ public class AuthApiController {
         }
 
         int responseCode = conn.getResponseCode();
-
-        String responseData = getResponse(conn, responseCode);
-
-        conn.disconnect();
-
-        access(responseData, redirectAttributes);
-        return "redirect:/success";
-    }
-
-    public GitIdResponseDto access(String response, RedirectAttributes redirectAttributes) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> map = objectMapper.readValue(response, Map.class);
-        String access_token = map.get("access_token");
-
-        URL url = new URL("https://api.github.com/user");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Authorization", "token " + access_token);
-
-        int responseCode = conn.getResponseCode();
-        String result = getResponse(conn, responseCode);
+        String responseData = authService.getResponse(conn, responseCode);
 
         conn.disconnect();
-        redirectAttributes.addFlashAttribute("result", result);
-
-        Map<String, String> gitInfo = objectMapper.readValue(result, Map.class);
-
-        System.out.println("gitInfo.get(\"login\") = " + gitInfo.get("login"));
-
-        return GitIdResponseDto.builder()
-                .id(gitInfo.get("login"))
-                .build();
-    }
-
-    private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        if (responseCode == 200) {
-            try (InputStream is = conn.getInputStream();
-                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-                for (String line = br.readLine(); line != null; line = br.readLine()) {
-                    sb.append(line);
-                }
-            }
-        }
-        return sb.toString();
+        return authService.access(responseData, redirectAttributes);
     }
 
     @DeleteMapping("/logout")
