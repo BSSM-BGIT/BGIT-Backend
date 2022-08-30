@@ -30,24 +30,6 @@ public class AuthApiController {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    @GetMapping(value = "/success")
-    public String success(HttpServletRequest request, Model model) throws JsonProcessingException {
-
-        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-        String response = null;
-        if (inputFlashMap != null) {
-            response = (String) inputFlashMap.get("result");
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Map<String, String> result = objectMapper.readValue(response, Map.class);
-        System.out.println("result = " + result);
-
-        model.addAttribute("result", result);
-        return "success";
-    }
-
     @GetMapping("/auth/github/callback")
     public String getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
 
@@ -67,7 +49,6 @@ public class AuthApiController {
         int responseCode = conn.getResponseCode();
 
         String responseData = getResponse(conn, responseCode);
-        System.out.println("responseData = " + responseData);
 
         conn.disconnect();
 
@@ -93,7 +74,6 @@ public class AuthApiController {
         System.out.println("result = " + result);
 
         conn.disconnect();
-
         redirectAttributes.addFlashAttribute("result", result);
     }
 
@@ -107,7 +87,6 @@ public class AuthApiController {
                 }
             }
         }
-        System.out.println("sb.toString() = " + sb.toString());
         return sb.toString();
     }
 
