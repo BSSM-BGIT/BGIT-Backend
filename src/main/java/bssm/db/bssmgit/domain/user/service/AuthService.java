@@ -93,7 +93,9 @@ public class AuthService {
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
-        user.updateGitId(gitInfo.get("login"));
+        if (user.getGithubId().isEmpty()) {
+            user.updateGitId(gitInfo.get("login"));
+        }
 
         return GitIdResponseDto.builder()
                 .id(gitInfo.get("login"))

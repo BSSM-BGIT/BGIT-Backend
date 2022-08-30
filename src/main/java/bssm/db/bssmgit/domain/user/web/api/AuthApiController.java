@@ -26,6 +26,12 @@ public class AuthApiController {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
+    @DeleteMapping("/logout")
+    public void logout(HttpServletRequest request) {
+        authService.logout(request.getHeader("ACCESS-TOKEN"));
+    }
+
+    // BSM 인증이 된 상태로 요청해야 GitId가 반환됨
     // https://github.com/login/oauth/authorize?client_id=b87feaccd801817573ad&redirect_uri=http://localhost:8080/auth/github/callback
     @GetMapping("/auth/github/callback")
     public GitIdResponseDto getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
@@ -47,11 +53,6 @@ public class AuthApiController {
 
         conn.disconnect();
         return authService.access(responseData, redirectAttributes);
-    }
-
-    @DeleteMapping("/logout")
-    public void logout(HttpServletRequest request) {
-        authService.logout(request.getHeader("ACCESS-TOKEN"));
     }
 
     @PutMapping("/refresh")
