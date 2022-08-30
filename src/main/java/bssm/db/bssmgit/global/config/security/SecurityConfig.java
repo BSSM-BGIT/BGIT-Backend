@@ -49,7 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/oauth/**").permitAll()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/oauth/**").permitAll()
+                .antMatchers("/auth/github/**").permitAll()
+                .antMatchers("/login/oauth2/code/github").permitAll()
                 .antMatchers("/api/manager/**")
                 .access("hasRole('MANAGER') or hasRole('ADMIN')")
                 .anyRequest().authenticated()
@@ -58,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
                 .oauth2Login()
-                .loginPage("/auth/oauth/git").permitAll()
+                .loginPage("/auth/github/**").permitAll()
                 .defaultSuccessUrl("/")
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);

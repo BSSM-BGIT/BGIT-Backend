@@ -2,17 +2,14 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.domain.user.web.dto.LoginRequestDto;
-import bssm.db.bssmgit.domain.user.web.dto.TokenResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
 import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
-import com.nimbusds.oauth2.sdk.TokenResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

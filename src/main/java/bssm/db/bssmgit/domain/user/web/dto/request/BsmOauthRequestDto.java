@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.domain.user.web.dto;
+package bssm.db.bssmgit.domain.user.web.dto.request;
 
 
 import lombok.AllArgsConstructor;
