@@ -32,7 +32,6 @@ public class AuthApiController {
 
     @GetMapping("/auth/github/callback")
     public String getCode(@RequestParam String code, RedirectAttributes redirectAttributes) throws IOException {
-
         URL url = new URL("https://github.com/login/oauth/access_token");
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -56,8 +55,7 @@ public class AuthApiController {
         return "redirect:/success";
     }
 
-    public void access(String response, RedirectAttributes redirectAttributes) throws IOException {
-
+    public GitIdResponseDto access(String response, RedirectAttributes redirectAttributes) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> map = objectMapper.readValue(response, Map.class);
         String access_token = map.get("access_token");
@@ -69,12 +67,18 @@ public class AuthApiController {
         conn.setRequestProperty("Authorization", "token " + access_token);
 
         int responseCode = conn.getResponseCode();
-
         String result = getResponse(conn, responseCode);
-        System.out.println("result = " + result);
 
         conn.disconnect();
         redirectAttributes.addFlashAttribute("result", result);
+
+        Map<String, String> gitInfo = objectMapper.readValue(result, Map.class);
+
+        System.out.println("gitInfo.get(\"login\") = " + gitInfo.get("login"));
+
+        return GitIdResponseDto.builder()
+                .id(gitInfo.get("login"))
+                .build();
     }
 
     private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
