@@ -5,6 +5,7 @@ import java.io.IOException;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import org.kohsuke.github.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GithubApi {
     GitHub github;
-    String token = "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";
+
+    @Value("${spring.oauth.git.url.token}")
+    String token;
 
     @GetMapping("/commits")
     public int getCommits(String userId) {
+        System.out.println("token = " + token);
         try {
             connectToGithub(token);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
         }
 
@@ -36,4 +39,5 @@ public class GithubApi {
         github = new GitHubBuilder().withOAuthToken(token).build();
         github.checkApiUrlValidity();
     }
+
 }
