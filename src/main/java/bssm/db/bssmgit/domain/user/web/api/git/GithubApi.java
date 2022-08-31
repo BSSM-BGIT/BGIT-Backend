@@ -1,6 +1,9 @@
 package bssm.db.bssmgit.domain.user.web.api.git;
 
 import java.io.IOException;
+
+import bssm.db.bssmgit.global.exception.CustomException;
+import bssm.db.bssmgit.global.exception.ErrorCode;
 import org.kohsuke.github.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +21,7 @@ public class GithubApi {
             connectToGithub(token);
         }
         catch (IOException e) {
-            throw new IllegalArgumentException("failed to connect gitHub");
+            throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
         }
 
         GHCommitSearchBuilder builder = github.searchCommits()

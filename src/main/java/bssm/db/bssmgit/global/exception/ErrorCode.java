@@ -28,7 +28,9 @@ public enum ErrorCode {
     EXPIRED_TOKEN(401, "만료된 토큰입니다."),
     INVALID_TOKEN(401, "무효한 토큰입니다."),
     NOT_MATCH_TOKEN(402, "토큰이 일치하지 않습니다."),
-    RETRY_LOGIN(402, "로그인을 다시 해주세요.");
+    RETRY_LOGIN(402, "로그인을 다시 해주세요."),
+
+    GIT_CONNECTION_REFUSED(511, "깃허브 커넥션이 불안정합니다.");
 
     private final int code;
     private final String message;
