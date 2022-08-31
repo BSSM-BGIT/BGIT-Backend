@@ -20,19 +20,15 @@ public class GithubApi {
 
     @GetMapping("/commits")
     public int getCommits(String userId) {
-        System.out.println("token = " + token);
         try {
             connectToGithub(token);
         } catch (IOException e) {
             throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
         }
 
-        GHCommitSearchBuilder builder = github.searchCommits()
-                .author(userId)
-                .sort(GHCommitSearchBuilder.Sort.AUTHOR_DATE);
+        GHCommitSearchBuilder builder = github.searchCommits().author(userId);
 
-        PagedSearchIterable<GHCommit> commits = builder.list().withPageSize(100);
-        return commits.getTotalCount();
+        return builder.list().getTotalCount();
     }
 
     private void connectToGithub(String token) throws IOException {
