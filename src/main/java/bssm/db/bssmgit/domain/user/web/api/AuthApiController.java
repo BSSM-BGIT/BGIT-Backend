@@ -62,5 +62,4 @@ public class AuthApiController {
         return authService.getNewAccessToken(refreshToken);
     }
 
-
 }

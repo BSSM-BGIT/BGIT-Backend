@@ -76,6 +76,7 @@ public class AuthService {
 
         URL url = new URL("https://api.github.com/user");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", "token " + access_token);
