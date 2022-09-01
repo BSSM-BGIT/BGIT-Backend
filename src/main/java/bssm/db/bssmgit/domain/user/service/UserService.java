@@ -5,19 +5,23 @@ import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +100,12 @@ public class UserService {
         return userRepository.findByEmail(resourceDto.getEmail()).orElseGet(
                 () -> signup(resourceDto, tokenResponseDto.getToken())
         );
+    }
+
+    public List<UserResponseDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).stream()
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
     }
 
 }

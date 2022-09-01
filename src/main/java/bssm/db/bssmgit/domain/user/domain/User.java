@@ -45,8 +45,14 @@ public class User {
     @Column(length = 64)
     private String githubId;
 
+    @Column(length = 8)
+    private int commits;
+
+    @Column(length = 128)
+    private String githubMsg;
+
     @Builder
-    public User(Long id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId) {
+    public User(Long id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg) {
         this.id = id;
         this.password = password;
         this.role = role;
@@ -57,6 +63,8 @@ public class User {
         this.name = name;
         this.bsmToken = bsmToken;
         this.githubId = githubId;
+        this.commits = commits;
+        this.githubMsg = githubMsg;
     }
 
     // auth
@@ -82,4 +90,11 @@ public class User {
         this.githubId = githubId;
     }
 
+    public void updateCommits(int commits) {
+        this.commits = commits;
+    }
+
+    public void updateGithubMsg(String msg) {
+        this.githubMsg = msg;
+    }
 }
