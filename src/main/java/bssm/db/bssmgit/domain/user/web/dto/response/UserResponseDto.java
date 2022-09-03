@@ -13,6 +13,7 @@ public class UserResponseDto {
     private final String name;
     private final String githubId;
     private final int commits;
+    private final String bio;
 
     public UserResponseDto(User user){
         this.email = user.getEmail();
@@ -22,5 +23,6 @@ public class UserResponseDto {
         this.name = user.getName();
         this.githubId = user.getGithubId();
         this.commits = user.getCommits();
+        this.bio = user.getGithubMsg();
     }
 }
