@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.global.config;
+package bssm.db.bssmgit.global.config.http;
 
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;

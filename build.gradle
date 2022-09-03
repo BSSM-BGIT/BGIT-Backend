@@ -38,6 +38,9 @@ dependencies {
 
 	implementation group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
 
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'

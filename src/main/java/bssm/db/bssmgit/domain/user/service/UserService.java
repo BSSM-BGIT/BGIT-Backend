@@ -41,12 +41,6 @@ public class UserService {
     @Value("${spring.oauth.bsm.url.resource}")
     private String OAUTH_BSM_RESOURCE_URL;
 
-    @Value("${spring.security.oauth2.client.registration.github.client-id}")
-    private String OAUTH_GIT_CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
-    private String OAUTH_GIT_CLIENT_SECRET;
-
     @Transactional
     private User signup(BsmOauthResourceDto dto, String bsmToken) {
         User user = User.builder()
