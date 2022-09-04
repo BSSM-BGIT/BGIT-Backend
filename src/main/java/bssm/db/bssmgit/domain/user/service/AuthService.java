@@ -104,7 +104,6 @@ public class AuthService {
                 .bodyToMono(OauthTokenResponse.class)
                 .block();
 
-        // 유저 정보 가져오기
         UserProfile userProfile = getUserProfile("github", tokenResponse);
         System.out.println("성공3");
         System.out.println("userProfile = " + userProfile.getGitId());
