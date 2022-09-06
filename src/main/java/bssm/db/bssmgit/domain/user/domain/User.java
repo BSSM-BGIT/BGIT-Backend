@@ -51,6 +51,8 @@ public class User {
     @Column(length = 128)
     private String githubMsg;
 
+    private String img;
+
     @Builder
     public User(Long id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg) {
         this.id = id;
@@ -96,5 +98,9 @@ public class User {
 
     public void updateGithubMsg(String msg) {
         this.githubMsg = msg;
+    }
+
+    public void updateImg(String img) {
+        this.img = img;
     }
 }

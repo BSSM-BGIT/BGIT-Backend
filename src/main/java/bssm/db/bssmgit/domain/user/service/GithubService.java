@@ -40,9 +40,11 @@ public class GithubService {
 
         String githubId = user.getGithubId();
         String githubMsg = github.getUser(githubId).getBio();
+        String img = github.getUser(githubId).getAvatarUrl();
 
         user.updateGithubMsg(githubMsg);
         user.updateCommits(github.searchCommits().author(githubId).list().getTotalCount());
+        user.updateImg(img);
 
         return new UserResponseDto(user);
     }

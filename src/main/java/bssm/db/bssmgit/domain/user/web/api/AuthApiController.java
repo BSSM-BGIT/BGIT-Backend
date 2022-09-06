@@ -17,15 +17,12 @@ public class AuthApiController {
 
     private final AuthService authService;
 
-    // http://bssm.kro.kr/oauth/login?clientId=4c81669f&redirectURI=http://localhost:8080/auth/oauth/bsm
     @PostMapping("/auth/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    // BSM 인증이 된 상태로 요청해야 GitId가 반환됨
-    // https://github.com/login/oauth/authorize?client_id=b87feaccd801817573ad&redirect_uri=http://localhost:8080/auth/github/callback
     @GetMapping("/login/oauth/github")
     public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);

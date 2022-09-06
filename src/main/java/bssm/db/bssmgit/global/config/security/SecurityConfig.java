@@ -23,7 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailService customUserDetailService;
     private final JwtValidateService jwtValidateService;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     @Override
@@ -39,8 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // TODO
-                .antMatchers("/**").permitAll()
+                .antMatchers("/login/oauth/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/git/**").permitAll()
                 .antMatchers("/user/**").permitAll()
