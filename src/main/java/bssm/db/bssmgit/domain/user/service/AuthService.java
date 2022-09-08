@@ -14,6 +14,8 @@ import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import lombok.RequiredArgsConstructor;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -55,6 +57,11 @@ public class AuthService {
     @Value("${spring.security.oauth2.provider.github.user-info-uri}")
     private String userInfoUri;
 
+    @Value("${spring.oauth.git.url.token}")
+    String token;
+
+    GitHub github;
+
     @Transactional
     public TokenResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
@@ -88,7 +95,12 @@ public class AuthService {
     }
 
     @Transactional
-    public GitLoginResponseDto gitLogin(String code) {
+    public GitLoginResponseDto gitLogin(String code) throws IOException {
+        try {
+            connectToGithub(token);
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
+        }
 
         OauthTokenResponse tokenResponse = WebClient.create()
                 .post()
@@ -105,14 +117,22 @@ public class AuthService {
                 .block();
 
         UserProfile userProfile = getUserProfile("github", tokenResponse);
-        System.out.println("성공3");
-        System.out.println("userProfile = " + userProfile.getGitId());
 
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
         user.updateGitId(userProfile.getGitId());
 
+        user.updateCommits(github.searchCommits().author(user.getGithubId())
+                .list().getTotalCount());
+        user.updateGithubMsg(github.getUser(user.getGithubId()).getBio());
+        user.updateImg(github.getUser(user.getGithubId()).getAvatarUrl());
+
         return new GitLoginResponseDto(user.getGithubId());
+    }
+
+    private void connectToGithub(String token) throws IOException {
+        github = new GitHubBuilder().withOAuthToken(token).build();
+        github.checkApiUrlValidity();
     }
 
     private MultiValueMap<String, String> tokenRequest(String code) {

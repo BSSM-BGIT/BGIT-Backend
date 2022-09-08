@@ -24,7 +24,7 @@ public class AuthApiController {
     }
 
     @GetMapping("/login/oauth/github")
-    public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) {
+    public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) throws IOException {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);
         return ResponseEntity.ok().body(loginResponse);
     }

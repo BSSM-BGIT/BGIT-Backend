@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,27 +27,27 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
-    public UserResponseDto updateGitCurrentUser() throws IOException {
-
+    public void updateGitCurrentUser() {
         try {
             connectToGithub(token);
         } catch (IOException e) {
             throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
         }
 
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+        userRepository.findAll()
+                        .forEach(u -> {
+                            u.updateCommits(github.searchCommits().author(u.getGithubId())
+                                .list().getTotalCount());
+                            try {
+                                u.updateGithubMsg(github.getUser(u.getGithubId()).getBio());
+                                u.updateImg(github.getUser(u.getGithubId()).getAvatarUrl());
+                            } catch (IOException e) {
+                                throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
+                            }
+                        });
 
-        String githubId = user.getGithubId();
-        String githubMsg = github.getUser(githubId).getBio();
-        String img = github.getUser(githubId).getAvatarUrl();
-
-        user.updateGithubMsg(githubMsg);
-        user.updateCommits(github.searchCommits().author(githubId).list().getTotalCount());
-        user.updateImg(img);
-
-        return new UserResponseDto(user);
     }
 
     private void connectToGithub(String token) throws IOException {
