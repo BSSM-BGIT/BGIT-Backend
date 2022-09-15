@@ -24,6 +24,7 @@ public class AuthApiController {
     }
 
     @GetMapping("/login/oauth/github")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) throws IOException {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);
         return ResponseEntity.ok().body(loginResponse);
@@ -37,6 +38,7 @@ public class AuthApiController {
     }
 
     @DeleteMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
     public void logout(HttpServletRequest request) {
         authService.logout(request.getHeader("ACCESS-TOKEN"));
     }

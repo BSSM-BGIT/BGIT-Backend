@@ -1,9 +1,6 @@
 package bssm.db.bssmgit.domain.user.service;
 
-import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
-import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +44,6 @@ public class GithubService {
                                 throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
                             }
                         });
-
     }
 
     private void connectToGithub(String token) throws IOException {

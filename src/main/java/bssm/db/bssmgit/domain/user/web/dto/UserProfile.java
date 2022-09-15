@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class UserProfile {
+
     private final String gitId;
 
     @Builder
