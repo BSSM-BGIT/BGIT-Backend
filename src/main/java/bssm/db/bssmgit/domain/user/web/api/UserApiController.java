@@ -2,6 +2,7 @@ package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.BojService;
 import bssm.db.bssmgit.domain.user.service.UserService;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,15 @@ public class UserApiController {
     private final UserService userService;
     private final BojService bojService;
 
-    @GetMapping
+    @GetMapping("/git")
     @ResponseStatus(HttpStatus.OK)
-    public Result findAllUserDesc(@PageableDefault(size = 10, sort = {"id"}, direction = Sort.Direction.DESC)
-                                      Pageable pageable) {
+    public Result findAllUserGit(
+            @PageableDefault(size = 10)
+            Pageable pageable) {
+
         List<UserResponseDto> userList = userService.findAll(pageable);
         return new Result(userList.size(), userList);
+
     }
 
     @PostMapping
@@ -35,4 +39,13 @@ public class UserApiController {
         bojService.updateUserBojInfo();
     }
 
+    @GetMapping("/boj")
+    @ResponseStatus(HttpStatus.OK)
+    public Result findAllUserBoj(
+            @PageableDefault(size = 10)
+            Pageable pageable) {
+
+        List<BojUserResponseDto> allUserBojDesc = bojService.findAllUserBojDesc(pageable);
+        return new Result(allUserBojDesc.size(), allUserBojDesc);
+    }
 }

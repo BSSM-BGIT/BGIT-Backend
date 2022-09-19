@@ -1,7 +1,9 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +18,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -111,4 +115,9 @@ public class BojService {
                 });
     }
 
+    public List<BojUserResponseDto> findAllUserBojDesc(Pageable pageable) {
+        return userRepository.findBojAll(pageable).stream()
+                .map(BojUserResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }

@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u order by u.commits DESC")
     Page<User> findAll(Pageable pageable);
+
+    @Query("select u from User u order by u.exp DESC")
+    Page<User> findBojAll(Pageable pageable);
 }
