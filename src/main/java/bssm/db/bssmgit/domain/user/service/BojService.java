@@ -49,11 +49,13 @@ public class BojService {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+
                     try {
                         urlConnection.setRequestMethod("GET");
                     } catch (ProtocolException e) {
                         throw new RuntimeException(e);
                     }
+
                     try {
                         urlConnection.connect();
                     } catch (IOException e) {
@@ -61,11 +63,13 @@ public class BojService {
                     }
 
                     BufferedInputStream bufferedInputStream = null;
+
                     try {
                         bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+
                     BufferedReader br = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
 
                     StringBuilder sb = new StringBuilder();
