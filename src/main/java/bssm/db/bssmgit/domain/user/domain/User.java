@@ -54,16 +54,20 @@ public class User {
     private String img;
 
     // solvedCount - 사용자가 푼 문제 수
+    @Column(length = 8)
     private long solvedCount;
 
     // exp - 사용자가 여태까지 획득한 경험치량
+    @Column(length = 64)
     private long exp;
 
     // tier - Bronze V를 1, Bronze IV를 2, ...,
     // Ruby I을 30, Master를 31로 표현하는 사용자 티어
+    @Column(length = 4)
     private long tier;
 
     // maxStreak - 최대 연속 문제 풀이일 수
+    @Column(length = 8)
     private long maxStreak;
 
     @Builder

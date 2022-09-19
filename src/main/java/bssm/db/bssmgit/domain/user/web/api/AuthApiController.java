@@ -23,7 +23,7 @@ public class AuthApiController {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    @GetMapping("/login/oauth/github")
+    @PostMapping("/login/oauth/github")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) throws IOException {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);

@@ -120,12 +120,15 @@ public class AuthService {
 
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-        user.updateGitId(userProfile.getGitId());
 
-        user.updateCommits(github.searchCommits().author(user.getGithubId())
-                .list().getTotalCount());
-        user.updateGithubMsg(github.getUser(user.getGithubId()).getBio());
-        user.updateImg(github.getUser(user.getGithubId()).getAvatarUrl());
+        if (user.getGithubId() == null) {
+            user.updateGitId(userProfile.getGitId());
+
+            user.updateCommits(github.searchCommits().author(user.getGithubId())
+                    .list().getTotalCount());
+            user.updateGithubMsg(github.getUser(user.getGithubId()).getBio());
+            user.updateImg(github.getUser(user.getGithubId()).getAvatarUrl());
+        }
 
         return new GitLoginResponseDto(user.getGithubId());
     }
