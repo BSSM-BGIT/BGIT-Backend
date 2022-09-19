@@ -53,6 +53,7 @@ public class User {
 
     private String img;
 
+    private String bojId;
     // solvedCount - 사용자가 푼 문제 수
     @Column(length = 8)
     private long solvedCount;
@@ -71,7 +72,7 @@ public class User {
     private long maxStreak;
 
     @Builder
-    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, long solvedCount, long exp, long tier, long maxStreak) {
+    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, String bojId, long solvedCount, long exp, long tier, long maxStreak) {
         this.password = password;
         this.role = role;
         this.email = email;
@@ -84,6 +85,7 @@ public class User {
         this.commits = commits;
         this.githubMsg = githubMsg;
         this.img = img;
+        this.bojId = bojId;
         this.solvedCount = solvedCount;
         this.exp = exp;
         this.tier = tier;
@@ -124,4 +126,12 @@ public class User {
     public void updateImg(String img) {
         this.img = img;
     }
+
+    public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak) {
+        this.solvedCount = solvedCount;
+        this.tier = tier;
+        this.exp = exp;
+        this.maxStreak = maxStreak;
+    }
+
 }

@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
+import bssm.db.bssmgit.domain.user.service.BojService;
 import bssm.db.bssmgit.domain.user.service.UserService;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
@@ -10,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserApiController {
 
     private final UserService userService;
+    private final BojService bojService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -26,4 +29,10 @@ public class UserApiController {
         List<UserResponseDto> userList = userService.findAll(pageable);
         return new Result(userList.size(), userList);
     }
+
+    @PostMapping
+    public void bojTest() throws IOException {
+        bojService.updateUserBojInfo();
+    }
+
 }
