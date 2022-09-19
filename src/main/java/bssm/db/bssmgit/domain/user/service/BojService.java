@@ -1,7 +1,9 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,9 +19,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,6 +27,89 @@ import java.util.stream.Collectors;
 public class BojService {
 
     private final UserRepository userRepository;
+    private String randomCode;
+    private String bojId;
+
+    public List<BojUserResponseDto> findAllUserBojDesc(Pageable pageable) {
+        return userRepository.findBojAll(pageable).stream()
+                .map(BojUserResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public BojAuthenticationResultResDto matchedCode() throws IOException {
+        URL url = new URL("https://solved.ac/api/v3/user/show" + "?handle=" + bojId);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.connect();
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
+        BufferedReader br = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
+
+        StringBuilder sb = new StringBuilder();
+        String s;
+
+        ArrayList<String> list = new ArrayList<>();
+        while ((s = br.readLine()) != null) {
+            sb.append(s);
+        }
+
+        StringTokenizer st = new StringTokenizer(sb.toString(), ",");
+        int tokens = st.countTokens();
+        for (int i = 0; i < tokens; i++) {
+            String word = st.nextToken();
+            if (word.contains("bio")) list.add(word);
+        }
+
+        ArrayList<String> message = new ArrayList<>();
+        for (String bio : list) {
+            StringTokenizer stt = new StringTokenizer(bio, ":");
+            stt.nextToken();
+            message.add(stt.nextToken());
+        }
+
+        String finalResult = null;
+        for (String result : message) {
+            StringTokenizer st2 = new StringTokenizer(result, "\"");
+            finalResult = st2.nextToken();
+        }
+
+        if (finalResult == null) return new BojAuthenticationResultResDto(false);
+        if (Objects.equals(finalResult, randomCode)) {
+            return new BojAuthenticationResultResDto(true);
+        } else {
+            return new BojAuthenticationResultResDto(false);
+        }
+    }
+
+    public RandomCodeResponseDto getRandomCode(String id) {
+        this.bojId = id;
+        String key = createKey();
+        this.randomCode = key;
+        return new RandomCodeResponseDto(key);
+    }
+
+    public static String createKey() {
+        StringBuffer key = new StringBuffer();
+        Random rnd = new Random();
+
+        for (int i = 0; i < 8; i++) {
+            int index = rnd.nextInt(3);
+
+            switch (index) {
+                case 0:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    break;
+                case 1:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    break;
+                case 2:
+                    key.append((rnd.nextInt(10)));
+                    break;
+            }
+        }
+
+        return key.toString();
+    }
 
     @Transactional
     @Scheduled(cron = "0 4 * * * *") // 매일 새벽 4시
@@ -119,9 +202,4 @@ public class BojService {
                 });
     }
 
-    public List<BojUserResponseDto> findAllUserBojDesc(Pageable pageable) {
-        return userRepository.findBojAll(pageable).stream()
-                .map(BojUserResponseDto::new)
-                .collect(Collectors.toList());
-    }
 }

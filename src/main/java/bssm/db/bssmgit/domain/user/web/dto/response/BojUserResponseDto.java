@@ -3,8 +3,6 @@ package bssm.db.bssmgit.domain.user.web.dto.response;
 import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class BojUserResponseDto {
 
@@ -21,7 +19,6 @@ public class BojUserResponseDto {
         this.exp = user.getExp();
         this.tier = user.getTier();
         this.maxStreak = user.getMaxStreak();
-        UserResponseDto userResponseDto = new UserResponseDto(user);
-        this.user = userResponseDto;
+        this.user = new UserResponseDto(user);
     }
 }
