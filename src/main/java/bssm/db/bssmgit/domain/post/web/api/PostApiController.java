@@ -46,9 +46,9 @@ public class PostApiController {
     public Result<List<PostResponseDto>> popularPosts(
             @PageableDefault(size = 10)
             Pageable pageable) {
-        List<PostResponseDto> managerPost = postService.popularPosts(pageable);
+        List<PostResponseDto> post = postService.popularPosts(pageable);
 
-        return new Result<>(managerPost.size(), managerPost);
+        return new Result<>(post.size(), post);
     }
 
     @GetMapping("/find/all")
@@ -59,5 +59,13 @@ public class PostApiController {
 
         List<PostResponseDto> response = postService.allPosts(pageable);
         return new Result<>(response.size(), response);
+    }
+
+    @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public PostResponseDto updatePost(
+            @PathVariable Long id,
+            @RequestBody PostCreateRequestDto request) {
+        return postService.update(id, request);
     }
 }

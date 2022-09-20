@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -74,5 +75,21 @@ public class PostService {
                 .stream()
                 .map(PostResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PostResponseDto update(Long id, PostCreateRequestDto request) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+
+        if (!Objects.equals(post.getWriter().getId(), user.getId())) {
+            throw new CustomException(ErrorCode.DONT_ACCESS_OTHER);
+        }
+
+        post.update(request.getTitle(), request.getContent());
+        return new PostResponseDto(post);
     }
 }
