@@ -20,7 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public Long createCategory(Post post, String category) {
+    public void createCategory(Post post, String category) {
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
@@ -32,6 +32,5 @@ public class CategoryService {
         ca.confirmManagerPost(post);
         ca.confirmUser(user);
 
-        return ca.getId();
     }
 }
