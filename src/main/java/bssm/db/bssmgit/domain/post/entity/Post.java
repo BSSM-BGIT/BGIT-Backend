@@ -37,6 +37,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Likes> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> categories = new ArrayList<>();
+
     private int view = 1;
 
     @CreatedDate
@@ -62,4 +65,7 @@ public class Post {
         this.view += 1;
     }
 
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
 }

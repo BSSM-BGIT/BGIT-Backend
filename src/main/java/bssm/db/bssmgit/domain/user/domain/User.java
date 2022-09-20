@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.user.domain;
 
+import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -7,7 +8,9 @@ import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -18,6 +21,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private List<Category> categories = new ArrayList<>();
 
     @Column(length = 128)
     private String password;
@@ -149,4 +155,7 @@ public class User {
         this.maxStreak = maxStreak;
     }
 
+    public void addPostCategories(Category category) {
+        this.categories.add(category);
+    }
 }
