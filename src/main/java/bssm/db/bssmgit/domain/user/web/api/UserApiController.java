@@ -21,6 +21,11 @@ public class UserApiController {
     private final UserService userService;
     private final BojService bojService;
 
+    @GetMapping
+    public UserResponseDto getUser() {
+        return userService.getUser();
+    }
+
     @GetMapping("/git")
     @ResponseStatus(HttpStatus.OK)
     public Result findAllUserGit(
