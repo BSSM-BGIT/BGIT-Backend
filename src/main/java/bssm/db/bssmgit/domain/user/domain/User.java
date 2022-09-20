@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -71,8 +73,11 @@ public class User {
     @Column(length = 8)
     private long maxStreak;
 
+    private String bojAuthId;
+    private String randomCode;
+
     @Builder
-    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, String bojId, long solvedCount, long exp, long tier, long maxStreak) {
+    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, String bojId, long solvedCount, long exp, long tier, long maxStreak, String bojAuthId, String randomCode) {
         this.password = password;
         this.role = role;
         this.email = email;
@@ -90,6 +95,8 @@ public class User {
         this.exp = exp;
         this.tier = tier;
         this.maxStreak = maxStreak;
+        this.bojAuthId = bojAuthId;
+        this.randomCode = randomCode;
     }
 
     // auth
@@ -121,6 +128,14 @@ public class User {
 
     public void updateGithubMsg(String msg) {
         this.githubMsg = msg;
+    }
+
+    public void updateBojAuthId(String bojAuthId) {
+        this.bojAuthId = bojAuthId;
+    }
+
+    public void updateRandomCode(String randomCode) {
+        this.randomCode = randomCode;
     }
 
     public void updateImg(String img) {

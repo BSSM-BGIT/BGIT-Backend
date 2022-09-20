@@ -1,9 +1,13 @@
 package bssm.db.bssmgit.domain.user.service;
 
+import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
+import bssm.db.bssmgit.global.config.security.SecurityUtil;
+import bssm.db.bssmgit.global.exception.CustomException;
+import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,8 +31,6 @@ import java.util.stream.Collectors;
 public class BojService {
 
     private final UserRepository userRepository;
-    private String randomCode;
-    private String bojId;
 
     public List<BojUserResponseDto> findAllUserBojDesc(Pageable pageable) {
         return userRepository.findBojAll(pageable).stream()
@@ -37,7 +39,13 @@ public class BojService {
     }
 
     public BojAuthenticationResultResDto matchedCode() throws IOException {
-        URL url = new URL("https://solved.ac/api/v3/user/show" + "?handle=" + bojId);
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+
+        String bojId = user.getBojId();
+        String randomCode = user.getRandomCode();
+
+        URL url = new URL("https://solved.ac/api/v3/user/show?handle=" + bojId);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("GET");
         urlConnection.connect();
@@ -81,10 +89,15 @@ public class BojService {
         }
     }
 
+    @Transactional
     public RandomCodeResponseDto getRandomCode(String id) {
-        this.bojId = id;
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+
         String key = createKey();
-        this.randomCode = key;
+        user.updateBojAuthId(id);
+        user.updateRandomCode(key);
+
         return new RandomCodeResponseDto(key);
     }
 
