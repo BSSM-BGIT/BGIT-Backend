@@ -49,10 +49,10 @@ public class Post {
     private LocalDateTime modifiedAt;
 
     @Builder
-    public Post(String title, String content, User user, int view) {
+    public Post(String title, String content, User writer, int view) {
         this.title = title;
         this.content = content;
-        this.writer = user;
+        this.writer = writer;
         this.view = view;
     }
 
@@ -67,5 +67,10 @@ public class Post {
 
     public void addCategory(Category category) {
         categories.add(category);
+    }
+
+    public void confirmWriter(User user) {
+        this.writer = user;
+        user.addPosts(this);
     }
 }

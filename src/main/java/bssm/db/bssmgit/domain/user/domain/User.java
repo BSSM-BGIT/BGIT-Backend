@@ -1,6 +1,7 @@
 package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.post.entity.Category;
+import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -21,6 +22,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "writer")
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Category> categories = new ArrayList<>();
@@ -157,5 +161,9 @@ public class User {
 
     public void addPostCategories(Category category) {
         this.categories.add(category);
+    }
+
+    public void addPosts(Post post) {
+        this.posts.add(post);
     }
 }
