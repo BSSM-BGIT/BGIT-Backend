@@ -6,6 +6,7 @@ import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
+import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,6 +101,14 @@ public class UserService {
         return userRepository.findAll(pageable).stream()
                 .map(UserResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public UserResponseDto getUser() {
+        return new UserResponseDto(
+                userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(
+                        () -> {throw new CustomException(ErrorCode.USER_NOT_FOUND);}
+                )
+        );
     }
 
 }
