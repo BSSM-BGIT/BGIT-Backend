@@ -24,7 +24,7 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 4 * * * *")
     @Transactional
     public void updateGitCurrentUser() {
         try {
