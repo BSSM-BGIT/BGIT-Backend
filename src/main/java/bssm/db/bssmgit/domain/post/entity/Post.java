@@ -2,6 +2,7 @@ package bssm.db.bssmgit.domain.post.entity;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,6 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.*;
 
@@ -29,7 +32,10 @@ public class Post {
     private String content;
 
     @ManyToOne(fetch = LAZY)
-    private User user;
+    private User writer;
+
+    @OneToMany(mappedBy = "post")
+    private List<Likes> likes = new ArrayList<>();
 
     private int view = 1;
 
@@ -38,6 +44,14 @@ public class Post {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    @Builder
+    public Post(String title, String content, User user, int view) {
+        this.title = title;
+        this.content = content;
+        this.writer = user;
+        this.view = view;
+    }
 
     public void update(String title, String content) {
         this.title = title;
