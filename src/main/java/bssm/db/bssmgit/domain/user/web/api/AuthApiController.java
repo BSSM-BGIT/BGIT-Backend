@@ -1,7 +1,10 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.AuthService;
+import bssm.db.bssmgit.domain.user.service.BojService;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import java.io.*;
 public class AuthApiController {
 
     private final AuthService authService;
+    private final BojService bojService;
 
     @PostMapping("/auth/oauth/bsm")
     @ResponseStatus(HttpStatus.OK)
@@ -23,11 +27,23 @@ public class AuthApiController {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
-    @GetMapping("/login/oauth/github")
+    @PostMapping("/login/oauth/github")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) throws IOException {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);
         return ResponseEntity.ok().body(loginResponse);
+    }
+
+    @GetMapping("/boj/random")
+    @ResponseStatus(HttpStatus.OK)
+    public RandomCodeResponseDto getRandomCode(@RequestParam String bojId) {
+        return bojService.getRandomCode(bojId);
+    }
+
+    @PostMapping("/auth/boj")
+    @ResponseStatus(HttpStatus.OK)
+    public BojAuthenticationResultResDto bojAuthentication() throws IOException {
+        return bojService.matchedCode();
     }
 
     @PutMapping("/refresh")

@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,9 +55,29 @@ public class User {
 
     private String img;
 
+    private String bojId;
+    // solvedCount - 사용자가 푼 문제 수
+    @Column(length = 8)
+    private long solvedCount;
+
+    // exp - 사용자가 여태까지 획득한 경험치량
+    @Column(length = 64)
+    private long exp;
+
+    // tier - Bronze V를 1, Bronze IV를 2, ...,
+    // Ruby I을 30, Master를 31로 표현하는 사용자 티어
+    @Column(length = 4)
+    private long tier;
+
+    // maxStreak - 최대 연속 문제 풀이일 수
+    @Column(length = 8)
+    private long maxStreak;
+
+    private String bojAuthId;
+    private String randomCode;
+
     @Builder
-    public User(Long id, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg) {
-        this.id = id;
+    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, String bojId, long solvedCount, long exp, long tier, long maxStreak, String bojAuthId, String randomCode) {
         this.password = password;
         this.role = role;
         this.email = email;
@@ -67,6 +89,14 @@ public class User {
         this.githubId = githubId;
         this.commits = commits;
         this.githubMsg = githubMsg;
+        this.img = img;
+        this.bojId = bojId;
+        this.solvedCount = solvedCount;
+        this.exp = exp;
+        this.tier = tier;
+        this.maxStreak = maxStreak;
+        this.bojAuthId = bojAuthId;
+        this.randomCode = randomCode;
     }
 
     // auth
@@ -100,7 +130,23 @@ public class User {
         this.githubMsg = msg;
     }
 
+    public void updateBojAuthId(String bojAuthId) {
+        this.bojAuthId = bojAuthId;
+    }
+
+    public void updateRandomCode(String randomCode) {
+        this.randomCode = randomCode;
+    }
+
     public void updateImg(String img) {
         this.img = img;
     }
+
+    public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak) {
+        this.solvedCount = solvedCount;
+        this.tier = tier;
+        this.exp = exp;
+        this.maxStreak = maxStreak;
+    }
+
 }
