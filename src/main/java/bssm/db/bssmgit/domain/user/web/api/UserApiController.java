@@ -11,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,11 +30,6 @@ public class UserApiController {
         List<UserResponseDto> userList = userService.findAll(pageable);
         return new Result(userList.size(), userList);
 
-    }
-
-    @PostMapping
-    public void bojTest() throws IOException {
-        bojService.updateUserBojInfo();
     }
 
     @GetMapping("/boj")

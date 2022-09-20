@@ -87,6 +87,7 @@ public class BojService {
         } else {
             return new BojAuthenticationResultResDto(false);
         }
+
     }
 
     @Transactional
