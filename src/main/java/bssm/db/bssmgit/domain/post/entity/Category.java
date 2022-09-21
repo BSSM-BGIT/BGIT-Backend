@@ -27,7 +27,7 @@ public class Category {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "manager_post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Builder

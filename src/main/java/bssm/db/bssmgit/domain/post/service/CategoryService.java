@@ -33,4 +33,9 @@ public class CategoryService {
         ca.confirmUser(user);
 
     }
+
+    @Transactional
+    public void removeAll(Long postId) {
+        categoryRepository.deleteAllCategories(postId);
+    }
 }

@@ -90,6 +90,14 @@ public class PostService {
         }
 
         post.update(request.getTitle(), request.getContent());
+
+        // PostCreateRequestDto 에 기존에 있던 카테고리들 + 새로운 카테고리 전부다 넣어야함
+        if (!request.getCategories().isEmpty()) {
+            categoryService.removeAll(post.getId());
+            request.getCategories()
+                    .forEach(c -> categoryService.createCategory(post, c));
+        }
+
         return new PostResponseDto(post);
     }
 }
