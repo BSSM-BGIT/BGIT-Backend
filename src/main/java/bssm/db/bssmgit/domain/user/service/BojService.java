@@ -38,11 +38,12 @@ public class BojService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public BojAuthenticationResultResDto matchedCode() throws IOException {
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
-        String bojId = user.getBojId();
+        String bojId = user.getBojAuthId();
         String randomCode = user.getRandomCode();
 
         URL url = new URL("https://solved.ac/api/v3/user/show?handle=" + bojId);
@@ -83,6 +84,9 @@ public class BojService {
 
         if (finalResult == null) return new BojAuthenticationResultResDto(false);
         if (Objects.equals(finalResult, randomCode)) {
+            user.updateBojId(user.getBojAuthId());
+            // TODO Refactor
+            updateUserBojInfo();
             return new BojAuthenticationResultResDto(true);
         } else {
             return new BojAuthenticationResultResDto(false);

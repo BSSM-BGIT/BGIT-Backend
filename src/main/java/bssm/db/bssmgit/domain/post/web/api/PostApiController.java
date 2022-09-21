@@ -74,4 +74,5 @@ public class PostApiController {
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
     }
+
 }

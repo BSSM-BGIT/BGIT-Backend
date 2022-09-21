@@ -159,6 +159,10 @@ public class User {
         this.maxStreak = maxStreak;
     }
 
+    public void updateBojId(String bojId) {
+        this.bojId = bojId;
+    }
+
     public void addPostCategories(Category category) {
         this.categories.add(category);
     }
