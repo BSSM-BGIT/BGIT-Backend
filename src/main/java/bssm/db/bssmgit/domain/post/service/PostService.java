@@ -100,4 +100,19 @@ public class PostService {
 
         return new PostResponseDto(post);
     }
+
+    @Transactional
+    public void deletePost(Long id) {
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+
+        if (!Objects.equals(post.getWriter().getId(), user.getId())) {
+            throw new CustomException(ErrorCode.DONT_ACCESS_OTHER);
+        }
+
+        postRepository.delete(post);
+    }
 }

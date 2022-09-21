@@ -68,4 +68,10 @@ public class PostApiController {
             @RequestBody PostCreateRequestDto request) {
         return postService.update(id, request);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+    }
 }
