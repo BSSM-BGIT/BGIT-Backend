@@ -132,12 +132,10 @@ public class User {
         this.githubId = githubId;
     }
 
-    public void updateCommits(int commits) {
+    public void updateGitInfo(int commits, String bio, String img) {
         this.commits = commits;
-    }
-
-    public void updateGithubMsg(String msg) {
-        this.githubMsg = msg;
+        this.githubMsg = bio;
+        this.img = img;
     }
 
     public void updateBojAuthId(String bojAuthId) {
@@ -148,9 +146,6 @@ public class User {
         this.randomCode = randomCode;
     }
 
-    public void updateImg(String img) {
-        this.img = img;
-    }
 
     public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak) {
         this.solvedCount = solvedCount;

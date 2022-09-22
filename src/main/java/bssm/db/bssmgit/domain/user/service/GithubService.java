@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.user.service;
 
+import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +26,7 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "0 4 * * * *")
+    @Scheduled(cron = "0 5 * * * *")
     @Transactional
     public void updateGitCurrentUser() {
         try {
@@ -33,17 +35,24 @@ public class GithubService {
             throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
         }
 
-        userRepository.findAll()
+        ArrayList<User> users = new ArrayList<>();
+        userRepository.findAll().stream()
+                .filter(u -> u.getGithubId() != null)
                         .forEach(u -> {
-                            u.updateCommits(github.searchCommits().author(u.getGithubId())
-                                .list().getTotalCount());
                             try {
-                                u.updateGithubMsg(github.getUser(u.getGithubId()).getBio());
-                                u.updateImg(github.getUser(u.getGithubId()).getAvatarUrl());
+                                int commits = github.searchCommits().author(u.getGithubId())
+                                        .list().getTotalCount();
+                                String bio = github.getUser(u.getGithubId()).getBio();
+                                String img = github.getUser(u.getGithubId()).getAvatarUrl();
+
+                                u.updateGitInfo(commits, bio, img);
+                                users.add(u);
                             } catch (IOException e) {
-                                throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
+                                throw new RuntimeException(e);
                             }
                         });
+
+        userRepository.saveAll(users);
     }
 
     private void connectToGithub(String token) throws IOException {

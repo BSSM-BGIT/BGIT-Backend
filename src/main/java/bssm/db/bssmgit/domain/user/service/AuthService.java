@@ -124,10 +124,12 @@ public class AuthService {
         if (user.getGithubId() == null) {
             user.updateGitId(userProfile.getGitId());
 
-            user.updateCommits(github.searchCommits().author(user.getGithubId())
-                    .list().getTotalCount());
-            user.updateGithubMsg(github.getUser(user.getGithubId()).getBio());
-            user.updateImg(github.getUser(user.getGithubId()).getAvatarUrl());
+            int commits = github.searchCommits().author(user.getGithubId())
+                    .list().getTotalCount();
+            String bio = github.getUser(user.getGithubId()).getBio();
+            String img = github.getUser(user.getGithubId()).getAvatarUrl();
+
+            user.updateGitInfo(commits, bio, img);
         }
 
         return new GitLoginResponseDto(user.getGithubId());

@@ -9,6 +9,7 @@ import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BojService {
@@ -133,13 +135,14 @@ public class BojService {
     @Scheduled(cron = "0 4 * * * *") // 매일 새벽 4시
     public void updateUserBojInfo() throws IOException {
         final String bojId;
+        ArrayList<User> users = new ArrayList<>();
 
         userRepository.findAll()
                 .stream().filter(u -> u.getGithubId() != null)
                 .forEach(u -> {
                     URL url = null;
                     try {
-                        url = new URL("https://solved.ac/api/v3/user/show" + "?handle=" + u.getBojId());
+                        url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojId());
                     } catch (MalformedURLException e) {
                         throw new RuntimeException(e);
                     }
@@ -217,7 +220,10 @@ public class BojService {
                     long maxStreak = Long.parseLong(result.get(3));
 
                     u.updateUserBojInfo(solvedCount, tier, exp, maxStreak);
+                    users.add(u);
                 });
+
+        userRepository.saveAll(users);
     }
 
 }
