@@ -38,19 +38,19 @@ public class GithubService {
         ArrayList<User> users = new ArrayList<>();
         userRepository.findAll().stream()
                 .filter(u -> u.getGithubId() != null)
-                        .forEach(u -> {
-                            try {
-                                int commits = github.searchCommits().author(u.getGithubId())
-                                        .list().getTotalCount();
-                                String bio = github.getUser(u.getGithubId()).getBio();
-                                String img = github.getUser(u.getGithubId()).getAvatarUrl();
+                .forEach(u -> {
+                    try {
+                        int commits = github.searchCommits().author(u.getGithubId())
+                                .list().getTotalCount();
+                        String bio = github.getUser(u.getGithubId()).getBio();
+                        String img = github.getUser(u.getGithubId()).getAvatarUrl();
 
-                                u.updateGitInfo(commits, bio, img);
-                                users.add(u);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                        u.updateGitInfo(commits, bio, img);
+                        users.add(u);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         userRepository.saveAll(users);
     }

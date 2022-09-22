@@ -160,7 +160,8 @@ public class AuthService {
                 .uri(userInfoUri)
                 .headers(header -> header.setBearerAuth(tokenResponse.getAccessToken()))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
                 .block();
     }
 
