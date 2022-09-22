@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void deleteByEmail(String email);
 
     @Query("select u from User u order by u.commits DESC")
-    Page<User> findAll(Pageable pageable);
+    Page<User> findGitAll(Pageable pageable);
 
     @Query("select u from User u order by u.exp DESC")
     Page<User> findBojAll(Pageable pageable);

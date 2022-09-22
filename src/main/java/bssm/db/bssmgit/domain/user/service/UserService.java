@@ -3,8 +3,10 @@ package bssm.db.bssmgit.domain.user.service;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
@@ -97,12 +99,6 @@ public class UserService {
         );
     }
 
-    public List<UserResponseDto> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).stream()
-                .map(UserResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
     public UserResponseDto getUser() {
         return new UserResponseDto(
                 userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(
@@ -111,4 +107,11 @@ public class UserService {
         );
     }
 
+    public List<GithubResponseDto> findAllUserGitDesc(Pageable pageable) {
+        return userRepository.findGitAll(pageable).stream().map(GithubResponseDto::new).collect(Collectors.toList());
+    }
+
+    public List<BojResponseDto> findAllUserBojDesc(Pageable pageable) {
+        return userRepository.findBojAll(pageable).stream().map(BojResponseDto::new).collect(Collectors.toList());
+    }
 }

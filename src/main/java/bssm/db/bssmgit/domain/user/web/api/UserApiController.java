@@ -3,8 +3,8 @@ package bssm.db.bssmgit.domain.user.web.api;
 import bssm.db.bssmgit.domain.user.service.BojService;
 import bssm.db.bssmgit.domain.user.service.GithubService;
 import bssm.db.bssmgit.domain.user.service.UserService;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,29 +24,23 @@ public class UserApiController {
     private final BojService bojService;
     private final GithubService githubService;
 
-    @GetMapping
-    public UserResponseDto getUser() {
-        return userService.getUser();
-    }
-
     @GetMapping("/git")
     @ResponseStatus(HttpStatus.OK)
-    public Result<List<UserResponseDto>> findAllUserGit(
+    public Result<List<GithubResponseDto>> findByGithubCommitDesc(
             @PageableDefault(size = 10)
             Pageable pageable) {
 
-        List<UserResponseDto> userList = userService.findAll(pageable);
-        return new Result<>(userList.size(), userList);
-
+        List<GithubResponseDto> allUserBojDesc = userService.findAllUserGitDesc(pageable);
+        return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
     @GetMapping("/boj")
     @ResponseStatus(HttpStatus.OK)
-    public Result<List<BojUserResponseDto>> findAllUserBoj(
+    public Result<List<BojResponseDto>> findByBojTierDesc(
             @PageableDefault(size = 10)
             Pageable pageable) {
 
-        List<BojUserResponseDto> allUserBojDesc = bojService.findAllUserBojDesc(pageable);
+        List<BojResponseDto> allUserBojDesc = userService.findAllUserBojDesc(pageable);
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 

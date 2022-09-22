@@ -4,7 +4,7 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Data;
 
 @Data
-public class BojUserResponseDto {
+public class BojResponseDto {
 
     private final String bojId;
     private final long solvedCount;
@@ -13,7 +13,7 @@ public class BojUserResponseDto {
     private final long maxStreak;
     private final UserResponseDto user;
 
-    public BojUserResponseDto(User user) {
+    public BojResponseDto(User user) {
         this.bojId = user.getBojId();
         this.solvedCount = user.getSolvedCount();
         this.exp = user.getExp();

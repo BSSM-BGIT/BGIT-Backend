@@ -2,9 +2,7 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojUserResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.*;
 import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -33,10 +31,6 @@ import java.util.stream.Collectors;
 public class BojService {
 
     private final UserRepository userRepository;
-
-    public List<BojUserResponseDto> findAllUserBojDesc(Pageable pageable) {
-        return userRepository.findBojAll(pageable).stream().map(BojUserResponseDto::new).collect(Collectors.toList());
-    }
 
     @Transactional
     public BojAuthenticationResultResDto matchedCode() throws IOException {
