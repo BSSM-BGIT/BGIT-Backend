@@ -10,7 +10,6 @@ import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,9 +25,8 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "0 5 * * * *")
-    @Transactional
-    public void updateGitCurrentUser() {
+    @Scheduled(cron = "0 5 * * * ?")
+    public void updateUserGithub() {
         try {
             connectToGithub(token);
         } catch (IOException e) {
@@ -39,11 +37,17 @@ public class GithubService {
         userRepository.findAll().stream()
                 .filter(u -> u.getGithubId() != null)
                 .forEach(u -> {
+                    System.out.println("u.getGithubId() = " + u.getGithubId());
                     try {
                         int commits = github.searchCommits().author(u.getGithubId())
                                 .list().getTotalCount();
+                        System.out.println("commits = " + commits);
+
                         String bio = github.getUser(u.getGithubId()).getBio();
+                        System.out.println("bio = " + bio);
+
                         String img = github.getUser(u.getGithubId()).getAvatarUrl();
+                        System.out.println("img = " + img);
 
                         u.updateGitInfo(commits, bio, img);
                         users.add(u);

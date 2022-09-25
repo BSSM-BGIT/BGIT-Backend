@@ -121,7 +121,6 @@ public class BojService {
         return key.toString();
     }
 
-    @Transactional
     @Scheduled(cron = "0 4 * * * *") // 매일 새벽 4시
     public void updateUserBojInfo() throws IOException {
         final String bojId;

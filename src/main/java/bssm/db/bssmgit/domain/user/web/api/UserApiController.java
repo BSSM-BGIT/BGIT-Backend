@@ -51,7 +51,7 @@ public class UserApiController {
 
     @PostMapping("/test/git")
     public void gitUpdateTest() throws IOException {
-        githubService.updateGitCurrentUser();
+        githubService.updateUserGithub();
     }
 
 }
