@@ -5,6 +5,7 @@ import bssm.db.bssmgit.domain.user.service.GithubService;
 import bssm.db.bssmgit.domain.user.service.UserService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,11 @@ public class UserApiController {
     private final UserService userService;
     private final BojService bojService;
     private final GithubService githubService;
+
+    @GetMapping
+    public UserResponseDto getUserInfo() {
+        return userService.getUser();
+    }
 
     @GetMapping("/git")
     @ResponseStatus(HttpStatus.OK)
