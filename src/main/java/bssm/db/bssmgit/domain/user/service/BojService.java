@@ -169,7 +169,7 @@ public class BojService {
 
             for (int i = 0; i < tokens; i++) {
                 String word = st.nextToken();
-                if (word.contains("solvedCount") || word.contains("exp") ||
+                if (word.contains("solvedCount") || word.contains("rating") ||
                         word.contains("tier") || word.contains("maxStreak") || word.contains("profileImageUrl"))
                     list.add(word);
             }
@@ -206,10 +206,12 @@ public class BojService {
             String bojImg = sbb.append(result.get(0)).toString();
             long solvedCount = Long.parseLong(result.get(1));
             long tier = Long.parseLong(result.get(2));
-            long exp = Long.parseLong(result.get(3));
+            long rating = Long.parseLong(result.get(3));
             long maxStreak = Long.parseLong(result.get(4));
 
-            u.updateUserBojInfo(solvedCount, tier, exp, maxStreak, bojImg);
+            System.out.println("rating = " + rating);
+
+            u.updateUserBojInfo(solvedCount, tier, rating, maxStreak, bojImg);
             users.add(u);
         });
 

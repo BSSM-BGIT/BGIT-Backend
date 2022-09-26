@@ -68,9 +68,8 @@ public class User {
     @Column(length = 8)
     private long solvedCount;
 
-    // exp - 사용자가 여태까지 획득한 경험치량
     @Column(length = 64)
-    private long exp;
+    private Integer rating;
 
     // tier - Bronze V를 1, Bronze IV를 2, ...,
     // Ruby I을 30, Master를 31로 표현하는 사용자 티어
@@ -86,7 +85,7 @@ public class User {
     private String randomCode;
 
     @Builder
-    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String githubImg, String bojId, long solvedCount, long exp, long tier, long maxStreak, String bojAuthId, String bojImg, String randomCode) {
+    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String githubImg, String bojId, long solvedCount, long rating, long tier, long maxStreak, String bojAuthId, String bojImg, String randomCode) {
         this.posts = posts;
         this.categories = categories;
         this.password = password;
@@ -103,7 +102,7 @@ public class User {
         this.githubImg = githubImg;
         this.bojId = bojId;
         this.solvedCount = solvedCount;
-        this.exp = exp;
+        this.rating = Math.toIntExact(rating);
         this.tier = tier;
         this.maxStreak = maxStreak;
         this.bojAuthId = bojAuthId;
@@ -141,10 +140,10 @@ public class User {
     }
 
 
-    public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak, String bojImg) {
+    public void updateUserBojInfo(Long solvedCount, Long tier, Long rating, Long maxStreak, String bojImg) {
         this.solvedCount = solvedCount;
         this.tier = tier;
-        this.exp = exp;
+        this.rating = Math.toIntExact(rating);
         this.maxStreak = maxStreak;
         this.bojImg = bojImg;
     }

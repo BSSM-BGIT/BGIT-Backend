@@ -8,7 +8,7 @@ public class BojResponseDto {
 
     private final String bojId;
     private final long solvedCount;
-    private final long exp;
+    private final long rating;
     private final long tier;
     private final long maxStreak;
     private final String bojImg;
@@ -17,7 +17,7 @@ public class BojResponseDto {
     public BojResponseDto(User user) {
         this.bojId = user.getBojId();
         this.solvedCount = user.getSolvedCount();
-        this.exp = user.getExp();
+        this.rating = user.getRating();
         this.tier = user.getTier();
         this.maxStreak = user.getMaxStreak();
         this.bojImg = user.getBojImg();
