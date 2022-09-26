@@ -42,7 +42,7 @@ public class CustomOAuth2UserService implements OAuth2UserService{
     public User saveOrUpdate(OAuth2User oAuth2User) {
         User user = User.builder()
                 .githubId(oAuth2User.getAttribute("login"))
-                .role(Role.ROLE_USER)
+                .role(Role.ROLE_BSSM)
                 .build();
 
         return userRepository.save(user);
