@@ -13,6 +13,7 @@ public class UserResponseDto {
     private final int studentClassNo;
     private final int studentNo;
     private final String name;
+    private final String school;
 
     public UserResponseDto(User user) {
         this.email = user.getEmail();
@@ -20,5 +21,6 @@ public class UserResponseDto {
         this.studentClassNo = user.getStudentClassNo();
         this.studentNo = user.getStudentNo();
         this.name = user.getName();
+        this.school = user.getRole().name();
     }
 }

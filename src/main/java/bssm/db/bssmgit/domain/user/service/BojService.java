@@ -8,7 +8,6 @@ import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +18,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -99,7 +96,7 @@ public class BojService {
     }
 
     public static String createKey() {
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
         Random rnd = new Random();
 
         for (int i = 0; i < 8; i++) {
@@ -107,10 +104,10 @@ public class BojService {
 
             switch (index) {
                 case 0:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    key.append((char) (rnd.nextInt(26) + 97));
                     break;
                 case 1:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    key.append((char) ((rnd.nextInt(26)) + 65));
                     break;
                 case 2:
                     key.append((rnd.nextInt(10)));
@@ -121,20 +118,19 @@ public class BojService {
         return key.toString();
     }
 
-    @Scheduled(cron = "0 4 * * * *") // 매일 새벽 4시
-    public void updateUserBojInfo() throws IOException {
-        final String bojId;
+    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
+    public void updateUserBojInfo() {
         ArrayList<User> users = new ArrayList<>();
 
         userRepository.findAll().stream().filter(u -> u.getGithubId() != null).forEach(u -> {
-            URL url = null;
+            URL url;
             try {
                 url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojId());
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
 
-            HttpURLConnection urlConnection = null;
+            HttpURLConnection urlConnection;
 
             try {
                 url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojId());

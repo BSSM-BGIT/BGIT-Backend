@@ -53,7 +53,9 @@ public class UserService {
                 .studentClassNo(dto.getClassNo())
                 .studentNo(dto.getStudentNo())
                 .bsmToken(bsmToken)
-                .role(Role.ROLE_USER)
+                // 소마고 4개로 서비스 확장시
+                // 리팩토링 필요
+                .role(Role.ROLE_BSSM)
                 .build();
         return userRepository.save(user);
     }

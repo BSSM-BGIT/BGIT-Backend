@@ -12,7 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,12 +44,12 @@ public class UserApiController {
     }
 
     @PostMapping("/test/boj")
-    public void bojUpdateTest() throws IOException {
+    public void bojUpdateTest() {
         bojService.updateUserBojInfo();
     }
 
     @PostMapping("/test/git")
-    public void gitUpdateTest() throws IOException {
+    public void gitUpdateTest() {
         githubService.updateUserGithub();
     }
 

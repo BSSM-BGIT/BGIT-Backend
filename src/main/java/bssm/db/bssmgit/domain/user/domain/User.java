@@ -10,9 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -118,14 +116,6 @@ public class User {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
         }
-    }
-
-    public void addUserAuthority() {
-        this.role = Role.ROLE_USER;
-    }
-
-    public void addAdmin() {
-        this.role = Role.ROLE_ADMIN;
     }
 
     public void updateGitId(String githubId) {
