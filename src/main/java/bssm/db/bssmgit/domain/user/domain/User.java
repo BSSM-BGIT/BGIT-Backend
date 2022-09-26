@@ -61,7 +61,7 @@ public class User {
     @Column(length = 128)
     private String githubMsg;
 
-    private String img;
+    private String githubImg;
 
     private String bojId;
     // solvedCount - 사용자가 푼 문제 수
@@ -82,10 +82,13 @@ public class User {
     private long maxStreak;
 
     private String bojAuthId;
+    private String bojImg;
     private String randomCode;
 
     @Builder
-    public User(String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String img, String bojId, long solvedCount, long exp, long tier, long maxStreak, String bojAuthId, String randomCode) {
+    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String githubImg, String bojId, long solvedCount, long exp, long tier, long maxStreak, String bojAuthId, String bojImg, String randomCode) {
+        this.posts = posts;
+        this.categories = categories;
         this.password = password;
         this.role = role;
         this.email = email;
@@ -97,13 +100,14 @@ public class User {
         this.githubId = githubId;
         this.commits = commits;
         this.githubMsg = githubMsg;
-        this.img = img;
+        this.githubImg = githubImg;
         this.bojId = bojId;
         this.solvedCount = solvedCount;
         this.exp = exp;
         this.tier = tier;
         this.maxStreak = maxStreak;
         this.bojAuthId = bojAuthId;
+        this.bojImg = bojImg;
         this.randomCode = randomCode;
     }
 
@@ -122,10 +126,10 @@ public class User {
         this.githubId = githubId;
     }
 
-    public void updateGitInfo(int commits, String bio, String img) {
+    public void updateGitInfo(int commits, String bio, String githubImg) {
         this.commits = commits;
         this.githubMsg = bio;
-        this.img = img;
+        this.githubImg = githubImg;
     }
 
     public void updateBojAuthId(String bojAuthId) {
@@ -137,11 +141,12 @@ public class User {
     }
 
 
-    public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak) {
+    public void updateUserBojInfo(Long solvedCount, Long tier, Long exp, Long maxStreak, String bojImg) {
         this.solvedCount = solvedCount;
         this.tier = tier;
         this.exp = exp;
         this.maxStreak = maxStreak;
+        this.bojImg = bojImg;
     }
 
     public void updateBojId(String bojId) {

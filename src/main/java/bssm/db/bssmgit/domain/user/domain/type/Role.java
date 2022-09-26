@@ -5,4 +5,5 @@ public enum Role {
     ROLE_GSM,
     ROLE_DGSW,
     ROLE_DSM;
+
 }

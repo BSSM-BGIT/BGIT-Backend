@@ -118,7 +118,7 @@ public class BojService {
         return key.toString();
     }
 
-    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
+//    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
     public void updateUserBojInfo() {
         ArrayList<User> users = new ArrayList<>();
 
@@ -169,16 +169,29 @@ public class BojService {
 
             for (int i = 0; i < tokens; i++) {
                 String word = st.nextToken();
-                if (word.contains("solvedCount") || word.contains("exp") || word.contains("tier") || word.contains("maxStreak"))
+                if (word.contains("solvedCount") || word.contains("exp") ||
+                        word.contains("tier") || word.contains("maxStreak") || word.contains("profileImageUrl"))
                     list.add(word);
             }
 
+            System.out.println("list = " + list);
+
             ArrayList<String> properties = new ArrayList<>();
+            String imgUrl = null;
             for (String property : list) {
                 StringTokenizer stt = new StringTokenizer(property, ":");
                 stt.nextToken();
-                properties.add(stt.nextToken());
+                String stt2 = stt.nextToken();
+                if (Objects.equals(stt2, "\"https")) {
+                    imgUrl = stt.nextToken();
+                    properties.add(stt2 + ":" + imgUrl);
+                    System.out.println("properties = " + properties);
+                } else {
+                    properties.add(stt2);
+                }
             }
+
+            System.out.println("properties = " + properties);
 
             ArrayList<String> result = new ArrayList<>();
             for (String bojInfo : properties) {
@@ -187,12 +200,16 @@ public class BojService {
                 result.add(bojInfo);
             }
 
-            long solvedCount = Long.parseLong(result.get(0));
-            long tier = Long.parseLong(result.get(1));
-            long exp = Long.parseLong(result.get(2));
-            long maxStreak = Long.parseLong(result.get(3));
+            System.out.println("result = " + result);
 
-            u.updateUserBojInfo(solvedCount, tier, exp, maxStreak);
+            StringBuilder sbb = new StringBuilder();
+            String bojImg = sbb.append(result.get(0)).toString();
+            long solvedCount = Long.parseLong(result.get(1));
+            long tier = Long.parseLong(result.get(2));
+            long exp = Long.parseLong(result.get(3));
+            long maxStreak = Long.parseLong(result.get(4));
+
+            u.updateUserBojInfo(solvedCount, tier, exp, maxStreak, bojImg);
             users.add(u);
         });
 

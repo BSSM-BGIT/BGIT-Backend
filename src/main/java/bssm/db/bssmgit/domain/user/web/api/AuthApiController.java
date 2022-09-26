@@ -29,7 +29,7 @@ public class AuthApiController {
 
     @PostMapping("/login/oauth/github")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<GitLoginResponseDto> login(@RequestParam String code) throws IOException {
+    public ResponseEntity<GitLoginResponseDto> loginGit(@RequestParam String code) throws IOException {
         GitLoginResponseDto loginResponse = authService.gitLogin(code);
         return ResponseEntity.ok().body(loginResponse);
     }

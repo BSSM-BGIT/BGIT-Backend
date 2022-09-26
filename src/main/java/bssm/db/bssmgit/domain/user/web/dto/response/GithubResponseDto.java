@@ -9,14 +9,14 @@ public class GithubResponseDto {
     private final int commits;
     private final String gitId;
     private final String gitMsg;
-    private final String img;
+    private final String githubImg;
     private final UserResponseDto user;
 
     public GithubResponseDto(User user) {
         this.commits = user.getCommits();
         this.gitId = user.getGithubId();
         this.gitMsg = user.getGithubMsg();
-        this.img = user.getImg();
+        this.githubImg = user.getGithubImg();
         this.user = new UserResponseDto(user);
     }
 }
