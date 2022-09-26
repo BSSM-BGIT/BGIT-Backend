@@ -170,7 +170,8 @@ public class BojService {
             for (int i = 0; i < tokens; i++) {
                 String word = st.nextToken();
                 if (word.contains("solvedCount") || word.contains("rating") ||
-                        word.contains("tier") || word.contains("maxStreak") || word.contains("profileImageUrl"))
+                        word.contains("tier") || word.contains("maxStreak") ||
+                        word.contains("profileImageUrl"))
                     list.add(word);
             }
 

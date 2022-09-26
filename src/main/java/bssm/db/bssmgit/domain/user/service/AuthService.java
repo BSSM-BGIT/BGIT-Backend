@@ -116,13 +116,14 @@ public class AuthService {
                 .bodyToMono(OauthTokenResponse.class)
                 .block();
 
-        UserProfile userProfile = getUserProfile("github", tokenResponse);
+        UserProfile userProfile = getUserProfile(tokenResponse);
 
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
         if (user.getGithubId() == null) {
             user.updateGitId(userProfile.getGitId());
+            userRepository.save(user);
 
             int commits = github.searchCommits().author(user.getGithubId())
                     .list().getTotalCount();
@@ -148,9 +149,9 @@ public class AuthService {
         return formData;
     }
 
-    private UserProfile getUserProfile(String providerName, OauthTokenResponse tokenResponse) {
+    private UserProfile getUserProfile(OauthTokenResponse tokenResponse) {
         Map<String, Object> userAttributes = getUserAttributes(tokenResponse);
-        return OauthAttributes.extract(providerName, userAttributes);
+        return OauthAttributes.extract("github", userAttributes);
     }
 
     // OAuth 서버에서 유저 정보 map으로 가져오기

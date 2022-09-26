@@ -17,7 +17,7 @@ public class GlobalException {
 
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler(CustomException.class)
-    public ErrorResponse handleGatiException(CustomException e, HttpServletRequest request) {
+    public ErrorResponse handleBgitException(CustomException e, HttpServletRequest request) {
         log.error("\nERROR_CODE: {} \n접근 경로: {} \nMessage: {}",
                 e.getErrorCode(), request.getRequestURI(), e.getErrorCode().getMessage());
 
