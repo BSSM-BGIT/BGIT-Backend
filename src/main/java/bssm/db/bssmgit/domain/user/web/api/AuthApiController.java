@@ -32,8 +32,10 @@ public class AuthApiController {
     }
 
     @GetMapping("/boj/random")
-    public RandomCodeResponseDto getRandomCode(HttpServletRequest request) {
-        return bojService.getRandomCode(request.getHeader("code"));
+    public RandomCodeResponseDto getRandomCode(
+            HttpServletRequest request)
+    {
+        return bojService.getRandomCode(request.getHeader("bojId"));
     }
 
     @PostMapping("/auth/boj")

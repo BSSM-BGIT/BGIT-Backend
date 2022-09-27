@@ -84,11 +84,11 @@ public class BojService {
     }
 
     @Transactional
-    public RandomCodeResponseDto getRandomCode(String id) {
+    public RandomCodeResponseDto getRandomCode(String bojId) {
         User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
         String key = createKey();
-        user.updateBojAuthId(id);
+        user.updateBojAuthId(bojId);
         user.updateRandomCode(key);
 
         return new RandomCodeResponseDto(key);
