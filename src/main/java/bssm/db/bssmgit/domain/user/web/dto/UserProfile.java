@@ -9,6 +9,11 @@ public class UserProfile {
 
     private final String gitId;
 
+    // int commits = github.searchCommits().user(user.getGithubId())
+    //                    .sort(GHCommitSearchBuilder.Sort.AUTHOR_DATE)
+    //                    .list()
+    //                    .getTotalCount();
+
     @Builder
     public UserProfile(String gitId) {
         this.gitId = gitId;
