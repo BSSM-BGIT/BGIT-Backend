@@ -6,20 +6,15 @@ import bssm.db.bssmgit.domain.user.web.dto.response.*;
 import bssm.db.bssmgit.global.config.security.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Slf4j
@@ -28,67 +23,41 @@ import java.util.*;
 public class BojService {
 
     private final UserRepository userRepository;
+    private final static String URL = "https://solved.ac/api/v3/user/show?handle=";
+    private final OkHttpClient okHttpClient;
 
     @Transactional
     public BojAuthenticationResultResDto matchedCode() throws IOException {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
-        String bojId = user.getBojAuthId();
-        String randomCode = user.getRandomCode();
-
-        URL url = new URL("https://solved.ac/api/v3/user/show?handle=" + bojId);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("GET");
-        urlConnection.connect();
-
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
-        BufferedReader br = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
-
-        StringBuilder sb = new StringBuilder();
-        String s;
-
-        ArrayList<String> list = new ArrayList<>();
-        while ((s = br.readLine()) != null) {
-            sb.append(s);
+        Request tokenRequest = new Request.Builder()
+                .url(URL + user.getBojAuthId())
+                .build();
+        Response bojResponse = okHttpClient.newCall(tokenRequest).execute();
+        if (bojResponse.code() == 404) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
-        StringTokenizer st = new StringTokenizer(sb.toString(), ",");
-        int tokens = st.countTokens();
-        for (int i = 0; i < tokens; i++) {
-            String word = st.nextToken();
-            if (word.contains("bio")) {
-                list.add(word);
-                System.out.println("word = " + word);
-            }
+        assert bojResponse.body() != null;
+        String result = bojResponse.body().string();
+
+        Gson gson = new Gson();
+        BojJsonResponseDto info = gson.fromJson(result, BojJsonResponseDto.class);
+
+        if (user.getRandomCode().equals(info.getBio())) {
+            user.updateUserBojInfo(
+                    user.getBojAuthId(),
+                    info.getSolvedCount(),
+                    info.getTier(),
+                    info.getRating(),
+                    info.getMaxStreak(),
+                    info.getProfileImageUrl(),
+                    info.getBio()
+            );
         }
 
-        ArrayList<String> message = new ArrayList<>();
-        for (String bio : list) {
-            StringTokenizer stt = new StringTokenizer(bio, ":");
-            stt.nextToken();
-            message.add(stt.nextToken());
-        }
-
-        System.out.println("message = " + message);
-
-        String finalResult = null;
-        for (String result : message) {
-            StringTokenizer st2 = new StringTokenizer(result, "\"");
-            finalResult = st2.nextToken();
-        }
-
-        System.out.println("finalResult = " + finalResult);
-
-        if (finalResult == null) return new BojAuthenticationResultResDto(false);
-        if (Objects.equals(finalResult, randomCode)) {
-            user.updateBojId(user.getBojAuthId());
-            // TODO Refactor
-            updateUserBojInfo();
-            return new BojAuthenticationResultResDto(true);
-        } else {
-            return new BojAuthenticationResultResDto(false);
-        }
-
+        return new BojAuthenticationResultResDto(user);
     }
 
     @Transactional
@@ -126,131 +95,52 @@ public class BojService {
     }
 
     @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
-    public void updateUserBojInfo() {
+    public void updateUserBojInfo() throws IOException {
         ArrayList<User> users = new ArrayList<>();
 
-        userRepository.findAll().stream().filter(u -> u.getBojAuthId() != null).forEach(u -> {
-            URL url;
-            try {
-                String bojAuthId = u.getBojAuthId();
-                String bojUrl = "https://solved.ac/api/v3/user/show?handle=";
-                url = new URL(bojUrl + bojAuthId);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+        userRepository.findAll().stream().filter(u -> u.getBojId() != null)
+                .forEach(u -> {
+                            // Request
+                            Request tokenRequest = new Request.Builder()
+                                    .url(URL + u.getBojAuthId())
+                                    .build();
+                            Response bojResponse = null;
+                            try {
+                                bojResponse = okHttpClient.newCall(tokenRequest).execute();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (bojResponse.code() == 404) {
+                                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                            }
 
-            HttpURLConnection urlConnection;
+                            assert bojResponse.body() != null;
+                            String result = null;
+                            try {
+                                result = bojResponse.body().string();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
-            try {
-                url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojAuthId());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+                            Gson gson = new Gson();
+                            BojJsonResponseDto info = gson.fromJson(result, BojJsonResponseDto.class);
 
-            BufferedInputStream bufferedInputStream = null;
+                            u.updateUserBojInfo(
+                                    u.getBojAuthId(),
+                                    info.getSolvedCount(),
+                                    info.getTier(),
+                                    info.getRating(),
+                                    info.getMaxStreak(),
+                                    info.getProfileImageUrl(),
+                                    info.getBio()
+                            );
 
-            try {
-                bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
-
-            StringBuilder sb = new StringBuilder();
-            String s;
-
-            ArrayList<String> list = new ArrayList<>();
-            while (true) {
-                try {
-                    if ((s = br.readLine()) == null) break;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                sb.append(s);
-            }
-
-            StringTokenizer st = new StringTokenizer(sb.toString(), ",");
-            int tokens = st.countTokens();
-
-            for (int i = 0; i < tokens; i++) {
-                String word = st.nextToken();
-                if (word.contains("solvedCount") || word.contains("rating") ||
-                        word.contains("tier") || word.contains("maxStreak") ||
-                        word.contains("profileImageUrl"))
-                    list.add(word);
-            }
-
-            System.out.println("list = " + list);
-
-            HashMap<String, String> properties = new HashMap<>();
-            String imgUrl = null;
-
-            String bojImg = null;
-            long solvedCount = 0;
-            long tier = 0;
-            long rating = 0;
-            long maxStreak = 0;
-            int solvedCountCnt = 0;
-            int ratingCnt = 0;
-            String solvedCountStorage = null;
-            String ratingStorage = null;
-
-            for (String property : list) {
-                StringTokenizer stt = new StringTokenizer(property, ":");
-                String firstToken = stt.nextToken();
-                String secondToken = stt.nextToken();
-                String thirdToken = "";
-
-                switch (firstToken) {
-                    case "\"tier\"":
-                        properties.put("tier", secondToken);
-                        break;
-                    case "\"maxStreak\"":
-                        properties.put("maxStreak", secondToken);
-                        break;
-                    case "\"solvedCount\"":
-                        solvedCountCnt++;
-                        if (solvedCountCnt == 2) properties.put("solvedCount", secondToken);
-                        else solvedCountStorage = secondToken;
-                        break;
-                    case "\"rating\"":
-                        ratingCnt++;
-                        if (ratingCnt == 2) properties.put("rating", secondToken);
-                        else ratingStorage = secondToken;
-                        break;
-                }
-
-                if (firstToken.equals("\"profileImageUrl\"")) {
-                    thirdToken = stt.nextToken();
-                    properties.put("profileImageUrl", secondToken + ":" + thirdToken);
-                }
-            }
-
-            if (solvedCountCnt == 1) {
-                properties.put("solvedCount", solvedCountStorage);
-            }
-
-            if (ratingCnt == 1) {
-                properties.put("rating", ratingStorage);
-            }
-
-            System.out.println("properties = " + properties);
-
-            bojImg = properties.get("profileImageUrl");
-            solvedCount = Long.parseLong(properties.get("solvedCount"));
-            tier = Long.parseLong(properties.get("tier"));
-            rating = Long.parseLong(properties.get("rating"));
-            maxStreak = Long.parseLong(properties.get("maxStreak"));
-
-            u.updateUserBojInfo(solvedCount, tier, rating, maxStreak, bojImg);
-            users.add(u);
-        });
+                            users.add(u);
+                        }
+                );
 
         userRepository.saveAll(users);
+
     }
 
 }

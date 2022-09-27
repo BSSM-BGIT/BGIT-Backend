@@ -13,7 +13,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -49,8 +52,13 @@ public class UserApiController {
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
+    @RequestMapping(value = "/url", method = RequestMethod.POST, produces = "application/json; charset=utf8")
+    public @ResponseBody HashMap<String, Object> method(@RequestBody Map<String, Object> param){
+        return null;
+    }
+
     @PostMapping("/test/boj")
-    public void bojUpdateTest() {
+    public void bojUpdateTest() throws IOException {
         bojService.updateUserBojInfo();
     }
 

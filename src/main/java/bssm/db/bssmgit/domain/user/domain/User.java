@@ -38,13 +38,13 @@ public class User {
     private String email;
 
     @Column
-    private int studentGrade;
+    private Integer studentGrade;
 
     @Column
-    private int studentClassNo;
+    private Integer studentClassNo;
 
     @Column
-    private int studentNo;
+    private Integer studentNo;
 
     @Column(length = 8)
     private String name;
@@ -56,7 +56,7 @@ public class User {
     private String githubId;
 
     @Column(length = 8)
-    private int commits;
+    private Integer commits;
 
     @Column(length = 128)
     private String githubMsg;
@@ -66,7 +66,7 @@ public class User {
     private String bojId;
     // solvedCount - 사용자가 푼 문제 수
     @Column(length = 8)
-    private long solvedCount;
+    private Integer solvedCount;
 
     @Column(length = 64)
     private Integer rating;
@@ -74,20 +74,25 @@ public class User {
     // tier - Bronze V를 1, Bronze IV를 2, ...,
     // Ruby I을 30, Master를 31로 표현하는 사용자 티어
     @Column(length = 4)
-    private long tier;
+    private Integer tier;
 
     // maxStreak - 최대 연속 문제 풀이일 수
     @Column(length = 8)
-    private long maxStreak;
+    private Integer maxStreak;
 
+    @Column
     private String bojAuthId;
 
     @Column
     private String bojImg;
+
+    private String bojBio;
+
+    @Column
     private String randomCode;
 
     @Builder
-    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, int studentGrade, int studentClassNo, int studentNo, String name, String bsmToken, String githubId, int commits, String githubMsg, String githubImg, String bojId, long solvedCount, long rating, long tier, long maxStreak, String bojAuthId, String bojImg, String randomCode) {
+    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, Integer studentGrade, Integer studentClassNo, Integer studentNo, String name, String bsmToken, String githubId, Integer commits, String githubMsg, String githubImg, String bojId, Integer solvedCount, Integer rating, Integer tier, Integer maxStreak, String bojAuthId, String bojImg, String randomCode) {
         this.posts = posts;
         this.categories = categories;
         this.password = password;
@@ -104,7 +109,7 @@ public class User {
         this.githubImg = githubImg;
         this.bojId = bojId;
         this.solvedCount = solvedCount;
-        this.rating = Math.toIntExact(rating);
+        this.rating = rating;
         this.tier = tier;
         this.maxStreak = maxStreak;
         this.bojAuthId = bojAuthId;
@@ -142,16 +147,14 @@ public class User {
     }
 
 
-    public void updateUserBojInfo(Long solvedCount, Long tier, Long rating, Long maxStreak, String bojImg) {
+    public void updateUserBojInfo(String bojId, Integer solvedCount, Integer tier, Integer rating, Integer maxStreak, String bojImg, String bio) {
+        this.bojId = bojId;
         this.solvedCount = solvedCount;
         this.tier = tier;
         this.rating = Math.toIntExact(rating);
         this.maxStreak = maxStreak;
         this.bojImg = bojImg;
-    }
-
-    public void updateBojId(String bojId) {
-        this.bojId = bojId;
+        this.bojBio = bio;
     }
 
     public void addPostCategories(Category category) {

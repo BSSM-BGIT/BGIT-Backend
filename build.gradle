@@ -37,6 +37,7 @@ dependencies {
 	implementation group: 'org.webjars', name: 'bootstrap', version: '4.3.1'
 
 	implementation group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+	implementation 'com.google.code.gson:gson:2.9.0'
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'

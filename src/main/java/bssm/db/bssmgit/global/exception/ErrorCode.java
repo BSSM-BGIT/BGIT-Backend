@@ -17,7 +17,7 @@ public enum ErrorCode {
 
 
     NOT_MATCH_PASSWORD(401, "비밀번호가 일치하지 않습니다."),
-    NOT_MATCH_CODE(401, "이메일 인증 코드가 일치하지 않습니다."),
+    NOT_MATCH_CODE(401, "인증 코드가 일치하지 않습니다."),
 
     USER_NOT_LOGIN(403, "로그인 후 이용해주세요"),
 

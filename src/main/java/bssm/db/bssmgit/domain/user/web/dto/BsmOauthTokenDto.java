@@ -10,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class BsmOauthTokenDto {
 
     private String token;
+
 }
