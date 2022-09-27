@@ -81,6 +81,8 @@ public class User {
     private long maxStreak;
 
     private String bojAuthId;
+
+    @Column
     private String bojImg;
     private String randomCode;
 

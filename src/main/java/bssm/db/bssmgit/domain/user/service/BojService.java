@@ -8,6 +8,7 @@ import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +56,10 @@ public class BojService {
         int tokens = st.countTokens();
         for (int i = 0; i < tokens; i++) {
             String word = st.nextToken();
-            if (word.contains("bio")) list.add(word);
+            if (word.contains("bio")) {
+                list.add(word);
+                System.out.println("word = " + word);
+            }
         }
 
         ArrayList<String> message = new ArrayList<>();
@@ -65,11 +69,15 @@ public class BojService {
             message.add(stt.nextToken());
         }
 
+        System.out.println("message = " + message);
+
         String finalResult = null;
         for (String result : message) {
             StringTokenizer st2 = new StringTokenizer(result, "\"");
             finalResult = st2.nextToken();
         }
+
+        System.out.println("finalResult = " + finalResult);
 
         if (finalResult == null) return new BojAuthenticationResultResDto(false);
         if (Objects.equals(finalResult, randomCode)) {
@@ -117,14 +125,16 @@ public class BojService {
         return key.toString();
     }
 
-//    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
+    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
     public void updateUserBojInfo() {
         ArrayList<User> users = new ArrayList<>();
 
-        userRepository.findAll().stream().filter(u -> u.getGithubId() != null).forEach(u -> {
+        userRepository.findAll().stream().filter(u -> u.getBojAuthId() != null).forEach(u -> {
             URL url;
             try {
-                url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojId());
+                String bojAuthId = u.getBojAuthId();
+                String bojUrl = "https://solved.ac/api/v3/user/show?handle=";
+                url = new URL(bojUrl + bojAuthId);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -132,7 +142,7 @@ public class BojService {
             HttpURLConnection urlConnection;
 
             try {
-                url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojId());
+                url = new URL("https://solved.ac/api/v3/user/show?handle=" + u.getBojAuthId());
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -176,40 +186,65 @@ public class BojService {
 
             System.out.println("list = " + list);
 
-            ArrayList<String> properties = new ArrayList<>();
+            HashMap<String, String> properties = new HashMap<>();
             String imgUrl = null;
+
+            String bojImg = null;
+            long solvedCount = 0;
+            long tier = 0;
+            long rating = 0;
+            long maxStreak = 0;
+            int solvedCountCnt = 0;
+            int ratingCnt = 0;
+            String solvedCountStorage = null;
+            String ratingStorage = null;
+
             for (String property : list) {
                 StringTokenizer stt = new StringTokenizer(property, ":");
-                stt.nextToken();
-                String stt2 = stt.nextToken();
-                if (Objects.equals(stt2, "\"https")) {
-                    imgUrl = stt.nextToken();
-                    properties.add(stt2 + ":" + imgUrl);
-                    System.out.println("properties = " + properties);
-                } else {
-                    properties.add(stt2);
+                String firstToken = stt.nextToken();
+                String secondToken = stt.nextToken();
+                String thirdToken = "";
+
+                switch (firstToken) {
+                    case "\"tier\"":
+                        properties.put("tier", secondToken);
+                        break;
+                    case "\"maxStreak\"":
+                        properties.put("maxStreak", secondToken);
+                        break;
+                    case "\"solvedCount\"":
+                        solvedCountCnt++;
+                        if (solvedCountCnt == 2) properties.put("solvedCount", secondToken);
+                        else solvedCountStorage = secondToken;
+                        break;
+                    case "\"rating\"":
+                        ratingCnt++;
+                        if (ratingCnt == 2) properties.put("rating", secondToken);
+                        else ratingStorage = secondToken;
+                        break;
                 }
+
+                if (firstToken.equals("\"profileImageUrl\"")) {
+                    thirdToken = stt.nextToken();
+                    properties.put("profileImageUrl", secondToken + ":" + thirdToken);
+                }
+            }
+
+            if (solvedCountCnt == 1) {
+                properties.put("solvedCount", solvedCountStorage);
+            }
+
+            if (ratingCnt == 1) {
+                properties.put("rating", ratingStorage);
             }
 
             System.out.println("properties = " + properties);
 
-            ArrayList<String> result = new ArrayList<>();
-            for (String bojInfo : properties) {
-                StringTokenizer st2 = new StringTokenizer(bojInfo, "\"");
-                bojInfo = st2.nextToken();
-                result.add(bojInfo);
-            }
-
-            System.out.println("result = " + result);
-
-            StringBuilder sbb = new StringBuilder();
-            String bojImg = sbb.append(result.get(0)).toString();
-            long solvedCount = Long.parseLong(result.get(1));
-            long tier = Long.parseLong(result.get(2));
-            long rating = Long.parseLong(result.get(3));
-            long maxStreak = Long.parseLong(result.get(4));
-
-            System.out.println("rating = " + rating);
+            bojImg = properties.get("profileImageUrl");
+            solvedCount = Long.parseLong(properties.get("solvedCount"));
+            tier = Long.parseLong(properties.get("tier"));
+            rating = Long.parseLong(properties.get("rating"));
+            maxStreak = Long.parseLong(properties.get("maxStreak"));
 
             u.updateUserBojInfo(solvedCount, tier, rating, maxStreak, bojImg);
             users.add(u);
