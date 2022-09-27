@@ -20,19 +20,16 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping("/create")
-    @ResponseStatus(HttpStatus.OK)
     public Long create(@RequestBody PostCreateRequestDto request) {
         return postService.createPost(request);
     }
 
     @GetMapping("/find/detail/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public PostResponseDto detail(@PathVariable Long id) {
         return postService.detail(id);
     }
 
     @GetMapping("/find/title")
-    @ResponseStatus(HttpStatus.OK)
     public Result<List<PostResponseDto>> findByTitle(@RequestParam String title,
                                                      @PageableDefault(size = 10)
                               Pageable pageable) {
@@ -42,7 +39,6 @@ public class PostApiController {
     }
 
     @GetMapping("/find/popular")
-    @ResponseStatus(HttpStatus.OK)
     public Result<List<PostResponseDto>> popularPosts(
             @PageableDefault(size = 10)
             Pageable pageable) {
@@ -52,7 +48,6 @@ public class PostApiController {
     }
 
     @GetMapping("/find/all")
-    @ResponseStatus(HttpStatus.OK)
     public Result<List<PostResponseDto>> allPosts(
             @PageableDefault(size = 10)
             Pageable pageable) {
@@ -62,7 +57,6 @@ public class PostApiController {
     }
 
     @PutMapping("/update/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public PostResponseDto updatePost(
             @PathVariable Long id,
             @RequestBody PostCreateRequestDto request) {
@@ -70,7 +64,6 @@ public class PostApiController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
     }

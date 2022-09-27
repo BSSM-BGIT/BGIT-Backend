@@ -14,6 +14,8 @@ public class UserResponseDto {
     private final int studentNo;
     private final String name;
     private final String school;
+    private final boolean githubAuth;
+    private final boolean bojAuth;
 
     public UserResponseDto(User user) {
         this.email = user.getEmail();
@@ -22,5 +24,7 @@ public class UserResponseDto {
         this.studentNo = user.getStudentNo();
         this.name = user.getName();
         this.school = user.getRole().name();
+        this.githubAuth = user.getGithubId() != null;
+        this.bojAuth = user.getBojAuthId() != null;
     }
 }
