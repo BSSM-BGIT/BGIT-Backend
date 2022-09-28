@@ -12,6 +12,7 @@ public class BojResponseDto {
     private final long tier;
     private final long maxStreak;
     private final String bojImg;
+    private final String bojBio;
     private final UserResponseDto user;
 
     public BojResponseDto(User user) {
@@ -21,6 +22,7 @@ public class BojResponseDto {
         this.tier = user.getTier();
         this.maxStreak = user.getMaxStreak();
         this.bojImg = user.getBojImg();
+        this.bojBio = user.getBojBio();
         this.user = new UserResponseDto(user);
     }
 }

@@ -104,7 +104,9 @@ public class UserService {
     public UserResponseDto getUser() {
         return new UserResponseDto(
                 userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(
-                        () -> {throw new CustomException(ErrorCode.USER_NOT_FOUND);}
+                        () -> {
+                            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                        }
                 )
         );
     }

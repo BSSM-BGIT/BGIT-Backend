@@ -3,8 +3,6 @@ package bssm.db.bssmgit.domain.user.web.dto.response;
 import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class UserResponseDto {
 
@@ -25,6 +23,6 @@ public class UserResponseDto {
         this.name = user.getName();
         this.school = user.getRole().name();
         this.githubAuth = user.getGithubId() != null;
-        this.bojAuth = user.getBojAuthId() != null;
+        this.bojAuth = user.getBojId() != null;
     }
 }

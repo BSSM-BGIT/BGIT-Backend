@@ -11,10 +11,10 @@ public class GithubResponseDto {
     private final int commits;
 
     @Column
-    private final String gitId;
+    private final String githubId;
 
     @Column
-    private final String gitMsg;
+    private final String githubMsg;
 
     @Column
     private final String githubImg;
@@ -23,8 +23,8 @@ public class GithubResponseDto {
 
     public GithubResponseDto(User user) {
         this.commits = user.getCommits();
-        this.gitId = user.getGithubId();
-        this.gitMsg = user.getGithubMsg();
+        this.githubId = user.getGithubId();
+        this.githubMsg = user.getGithubMsg();
         this.githubImg = user.getGithubImg();
         this.user = new UserResponseDto(user);
     }
