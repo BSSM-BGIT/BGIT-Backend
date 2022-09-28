@@ -49,14 +49,23 @@ public class AuthService {
     @Value("${spring.security.oauth2.user.github.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.user.github.redirect-uri}")
-    private String redirectUri;
+    @Value("${spring.security.oauth2.user.github.redirect-url}")
+    private String redirectUrl;
+
+    @Value("${spring.security.oauth2.user.github.test-redirect-url}")
+    private String testRedirectUrl;
+
+    @Value("${spring.security.oauth2.user.github.test-client-id}")
+    private String testClientId;
+
+    @Value("${spring.security.oauth2.user.github.test-client-secret}")
+    private String testClientSecret;
 
     @Value("${spring.security.oauth2.provider.github.token-uri}")
-    private String tokenUri;
+    private String tokenUrl;
 
     @Value("${spring.security.oauth2.provider.github.user-info-uri}")
-    private String userInfoUri;
+    private String userInfoUrl;
 
     @Value("${spring.oauth.git.url.token}")
     String token;
@@ -105,7 +114,7 @@ public class AuthService {
 
         OauthTokenResponse tokenResponse = WebClient.create()
                 .post()
-                .uri(tokenUri)
+                .uri(tokenUrl)
                 .headers(header -> {
                     header.setBasicAuth(clientId, clientSecret);
                     header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -125,16 +134,8 @@ public class AuthService {
         if (user.getGithubId() == null) {
             user.updateGitId(userProfile.getGitId());
             userRepository.save(user);
-
-            int commits = github.searchCommits().user(user.getGithubId())
-                    .sort(GHCommitSearchBuilder.Sort.AUTHOR_DATE)
-                    .list()
-                    .getTotalCount();
-            String bio = github.getUser(user.getGithubId()).getBio();
-            String img = github.getUser(user.getGithubId()).getAvatarUrl();
-
-            user.updateGitInfo(commits, bio, img);
         }
+
 
         return new GitLoginResponseDto(user.getGithubId());
     }
@@ -148,7 +149,7 @@ public class AuthService {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
         formData.add("grant_type", "authorization_code");
-        formData.add("redirect_uri", redirectUri);
+        formData.add("redirect_uri", redirectUrl);
         return formData;
     }
 
@@ -161,7 +162,7 @@ public class AuthService {
     private Map<String, Object> getUserAttributes(OauthTokenResponse tokenResponse) {
         return WebClient.create()
                 .get()
-                .uri(userInfoUri)
+                .uri(userInfoUrl)
                 .headers(header -> header.setBearerAuth(tokenResponse.getAccessToken()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {

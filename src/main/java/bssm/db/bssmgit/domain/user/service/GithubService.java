@@ -25,7 +25,7 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "0 5 * * * ?")
+    @Scheduled(cron = "* */10 * * * *")
     public void updateUserGithub() {
         try {
             connectToGithub(token);
@@ -41,13 +41,8 @@ public class GithubService {
                     try {
                         int commits = github.searchCommits().author(u.getGithubId())
                                 .list().getTotalCount();
-                        System.out.println("commits = " + commits);
-
                         String bio = github.getUser(u.getGithubId()).getBio();
-                        System.out.println("bio = " + bio);
-
                         String img = github.getUser(u.getGithubId()).getAvatarUrl();
-                        System.out.println("img = " + img);
 
                         u.updateGitInfo(commits, bio, img);
                         users.add(u);
