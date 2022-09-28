@@ -14,6 +14,7 @@ import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import lombok.RequiredArgsConstructor;
+import org.kohsuke.github.GHCommitSearchBuilder;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -125,8 +126,10 @@ public class AuthService {
             user.updateGitId(userProfile.getGitId());
             userRepository.save(user);
 
-            int commits = github.searchCommits().author(user.getGithubId())
-                    .list().getTotalCount();
+            int commits = github.searchCommits().user(user.getGithubId())
+                    .sort(GHCommitSearchBuilder.Sort.AUTHOR_DATE)
+                    .list()
+                    .getTotalCount();
             String bio = github.getUser(user.getGithubId()).getBio();
             String img = github.getUser(user.getGithubId()).getAvatarUrl();
 

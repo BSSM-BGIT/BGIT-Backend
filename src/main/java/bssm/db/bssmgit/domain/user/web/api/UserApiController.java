@@ -33,22 +33,14 @@ public class UserApiController {
     }
 
     @GetMapping("/git")
-    @ResponseStatus(HttpStatus.OK)
-    public Result<List<GithubResponseDto>> findByGithubCommitDesc(
-            @PageableDefault(size = 10)
-            Pageable pageable) {
-
-        List<GithubResponseDto> allUserBojDesc = userService.findAllUserGitDesc(pageable);
+    public Result<List<GithubResponseDto>> findByGithubCommitDesc() {
+        List<GithubResponseDto> allUserBojDesc = userService.findAllUserGitDesc();
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
     @GetMapping("/boj")
-    @ResponseStatus(HttpStatus.OK)
-    public Result<List<BojResponseDto>> findByBojTierDesc(
-            @PageableDefault(size = 10)
-            Pageable pageable) {
-
-        List<BojResponseDto> allUserBojDesc = userService.findAllUserBojDesc(pageable);
+    public Result<List<BojResponseDto>> findByBojTierDesc() {
+        List<BojResponseDto> allUserBojDesc = userService.findAllUserBojDesc();
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 

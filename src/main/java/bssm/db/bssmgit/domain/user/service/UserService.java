@@ -109,15 +109,15 @@ public class UserService {
         );
     }
 
-    public List<GithubResponseDto> findAllUserGitDesc(Pageable pageable) {
-        return userRepository.findGitAll(pageable).stream()
+    public List<GithubResponseDto> findAllUserGitDesc() {
+        return userRepository.findGitAll().stream()
                 .filter(u -> u.getGithubId() != null)
                 .map(GithubResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public List<BojResponseDto> findAllUserBojDesc(Pageable pageable) {
-        return userRepository.findBojAll(pageable).stream()
+    public List<BojResponseDto> findAllUserBojDesc() {
+        return userRepository.findBojAll().stream()
                 .filter(u -> u.getBojId() != null)
                 .map(BojResponseDto::new)
                 .collect(Collectors.toList());
