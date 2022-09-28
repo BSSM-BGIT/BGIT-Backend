@@ -26,9 +26,8 @@ public class AuthApiController {
     }
 
     @PostMapping("/auth/oauth/github")
-    public ResponseEntity<GitLoginResponseDto> loginGit(HttpServletRequest request) throws IOException {
-        GitLoginResponseDto loginResponse = authService.gitLogin(request.getHeader("code"));
-        return ResponseEntity.ok().body(loginResponse);
+    public GitLoginResponseDto loginGit(HttpServletRequest request) throws IOException {
+        return authService.gitLogin(request.getHeader("code"));
     }
 
     @GetMapping("/boj/random")

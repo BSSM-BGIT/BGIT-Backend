@@ -25,7 +25,7 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "0 3 * * * ?") // 매일 새벽 4시
     public void updateUserGithub() {
         try {
             connectToGithub(token);

@@ -14,7 +14,7 @@ import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import lombok.RequiredArgsConstructor;
-import org.kohsuke.github.GHCommitSearchBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +34,7 @@ import java.util.Map;
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class AuthService {
 
@@ -132,7 +133,25 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
 
         if (user.getGithubId() == null) {
+
             user.updateGitId(userProfile.getGitId());
+
+//            log.error("실행됨1");
+            int commits = github.searchCommits().author(userProfile.getGitId())
+                    .list().getTotalCount();
+//            log.error("실행됨2");
+
+            String bio = github.getUser(userProfile.getGitId()).getBio();
+//            log.error("실행됨3");
+
+            String img = github.getUser(userProfile.getGitId()).getAvatarUrl();
+//            log.error("실행됨4");
+
+            log.error("commits : {}", commits);
+            log.error("bio : {}", bio);
+            log.error("img : {}", img);
+
+            user.updateGitInfo(commits, bio, img);
             userRepository.save(user);
         }
 
