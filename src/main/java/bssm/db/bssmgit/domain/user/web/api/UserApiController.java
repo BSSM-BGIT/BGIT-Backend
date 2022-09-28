@@ -41,11 +41,6 @@ public class UserApiController {
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
-    @RequestMapping(value = "/url", method = RequestMethod.POST, produces = "application/json; charset=utf8")
-    public @ResponseBody HashMap<String, Object> method(@RequestBody Map<String, Object> param){
-        return null;
-    }
-
     @PostMapping("/test/boj")
     public void bojUpdateTest() throws IOException {
         bojService.updateUserBojInfo();

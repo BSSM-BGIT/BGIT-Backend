@@ -112,6 +112,7 @@ public class UserService {
     public List<GithubResponseDto> findAllUserGitDesc() {
         return userRepository.findGitAll().stream()
                 .filter(u -> u.getGithubId() != null)
+                .filter(u -> u.getCommits() != null)
                 .map(GithubResponseDto::new)
                 .collect(Collectors.toList());
     }

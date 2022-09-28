@@ -61,8 +61,10 @@ public class User {
     @Column(length = 128)
     private String githubMsg;
 
+    @Column
     private String githubImg;
 
+    @Column
     private String bojId;
     // solvedCount - 사용자가 푼 문제 수
     @Column(length = 8)
@@ -86,6 +88,7 @@ public class User {
     @Column
     private String bojImg;
 
+    @Column
     private String bojBio;
 
     @Column
