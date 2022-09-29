@@ -51,9 +51,4 @@ public class UserApiController {
         bojService.updateUserBojInfo();
     }
 
-    @PostMapping("/test/git")
-    public void gitUpdateTest() {
-        githubService.updateUserGithub();
-    }
-
 }
