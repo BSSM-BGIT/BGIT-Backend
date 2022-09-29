@@ -5,16 +5,22 @@ import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class GithubService {
 
@@ -25,8 +31,13 @@ public class GithubService {
     @Value("${spring.oauth.git.url.token}")
     String token;
 
-    @Scheduled(cron = "0 3 * * * ?") // 매일 새벽 4시
-    public void updateUserGithub() {
+    private void connectToGithub(String token) throws IOException {
+        github = new GitHubBuilder().withOAuthToken(token).build();
+        github.checkApiUrlValidity();
+    }
+
+    @Scheduled(cron = "0 3 * * * ?") // 매일 새벽 3시
+    public void updateUser() {
         try {
             connectToGithub(token);
         } catch (IOException e) {
@@ -34,28 +45,49 @@ public class GithubService {
         }
 
         ArrayList<User> users = new ArrayList<>();
+
         userRepository.findAll().stream()
                 .filter(u -> u.getGithubId() != null)
                 .forEach(u -> {
-                    System.out.println("u.getGithubId() = " + u.getGithubId());
                     try {
-                        int commits = github.searchCommits().author(u.getGithubId())
-                                .list().getTotalCount();
+                        String commits = null;
+                        boolean b = false;
+
+                        URL url = new URL("https://github.com/" + u.getGithubId());
+                        URLConnection uc = url.openConnection();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+
+                        String inputLine;
+                        while ((inputLine = br.readLine()) != null) {
+                            if (b) {
+                                commits = inputLine;
+                                break;
+                            }
+                            if (inputLine.contains("<h2 class=\"f4 text-normal mb-2\">")) {
+                                b = true;
+                            }
+                        }
+
+                        int commit = 0;
+                        if (commits != null) {
+                            commits = commits.replaceAll("\\s+", "");
+                            commits = commits.replaceAll(",", "");
+                            commit = Integer.parseInt(commits);
+                        }
                         String bio = github.getUser(u.getGithubId()).getBio();
                         String img = github.getUser(u.getGithubId()).getAvatarUrl();
 
-                        u.updateGitInfo(commits, bio, img);
+                        u.updateGitInfo(commit, bio, img);
                         users.add(u);
+
+                        br.close();
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+
                 });
 
         userRepository.saveAll(users);
-    }
-
-    private void connectToGithub(String token) throws IOException {
-        github = new GitHubBuilder().withOAuthToken(token).build();
-        github.checkApiUrlValidity();
     }
 }

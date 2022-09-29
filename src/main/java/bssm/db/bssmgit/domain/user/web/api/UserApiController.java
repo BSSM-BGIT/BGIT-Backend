@@ -41,6 +41,11 @@ public class UserApiController {
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
+    @GetMapping("/test")
+    public void testing() {
+        githubService.updateUser();
+    }
+
     @PostMapping("/test/boj")
     public void bojUpdateTest() throws IOException {
         bojService.updateUserBojInfo();
