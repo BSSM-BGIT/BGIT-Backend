@@ -26,7 +26,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -136,20 +140,9 @@ public class AuthService {
 
             user.updateGitId(userProfile.getGitId());
 
-//            log.error("실행됨1");
-            int commits = github.searchCommits().author(userProfile.getGitId())
-                    .list().getTotalCount();
-//            log.error("실행됨2");
-
+            int commits = getUserCommit(userProfile.getGitId());
             String bio = github.getUser(userProfile.getGitId()).getBio();
-//            log.error("실행됨3");
-
             String img = github.getUser(userProfile.getGitId()).getAvatarUrl();
-//            log.error("실행됨4");
-
-            log.error("commits : {}", commits);
-            log.error("bio : {}", bio);
-            log.error("img : {}", img);
 
             user.updateGitInfo(commits, bio, img);
             userRepository.save(user);
@@ -157,6 +150,44 @@ public class AuthService {
 
 
         return new GitLoginResponseDto(user.getGithubId());
+    }
+
+    public int getUserCommit(String githubId) {
+        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+        try {
+            String commits = null;
+            boolean b = false;
+
+            URL url = new URL("https://github.com/" + githubId);
+            URLConnection uc = url.openConnection();
+            BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+
+            String inputLine;
+            while ((inputLine = br.readLine()) != null) {
+                if (b) {
+                    commits = inputLine;
+                    break;
+                }
+                if (inputLine.contains("<h2 class=\"f4 text-normal mb-2\">")) {
+                    b = true;
+                }
+            }
+
+            int commit = 0;
+            if (commits != null) {
+                commits = commits.replaceAll("\\s+", "");
+                commits = commits.replaceAll(",", "");
+                commit = Integer.parseInt(commits);
+            }
+
+            br.close();
+
+            return commit;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void connectToGithub(String token) throws IOException {
