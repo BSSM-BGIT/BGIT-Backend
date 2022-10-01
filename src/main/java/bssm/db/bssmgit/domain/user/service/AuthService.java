@@ -8,7 +8,8 @@ import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.OauthTokenResponse;
 import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
-import bssm.db.bssmgit.global.config.security.SecurityUtil;
+import bssm.db.bssmgit.global.util.CookieUtil;
+import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
@@ -26,6 +27,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.servlet.http.Cookie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
+import static bssm.db.bssmgit.global.jwt.JwtProperties.ACCESS_TOKEN_VALID_TIME;
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtValidateService jwtValidateService;
+    private final CookieUtil cookieUtil;
     private final RedisService redisService;
     private final UserService userService;
 
@@ -85,9 +89,12 @@ public class AuthService {
         final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
         redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
+        Cookie accessTokenCookie = cookieUtil.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
+        Cookie refreshTokenCookie = cookieUtil.createCookie("REFRESH-TOKEN", accessToken, REFRESH_TOKEN_VALID_TIME);
+
         return TokenResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(accessTokenCookie)
+                .refreshToken(refreshTokenCookie)
                 .build();
     }
 
@@ -103,9 +110,10 @@ public class AuthService {
     public TokenResponseDto getNewAccessToken(String refreshToken) {
         jwtValidateService.validateRefreshToken(refreshToken);
 
+        String accessToken = jwtTokenProvider.createAccessToken(jwtValidateService.getEmail(refreshToken));
+        Cookie accessTokenCookie = cookieUtil.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
         return TokenResponseDto.builder()
-                .accessToken(jwtTokenProvider.createAccessToken(
-                        jwtValidateService.getEmail(refreshToken)))
+                .accessToken(accessTokenCookie)
                 .build();
     }
 

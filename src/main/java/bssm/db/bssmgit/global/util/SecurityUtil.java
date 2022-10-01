@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.global.config.security;
+package bssm.db.bssmgit.global.util;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

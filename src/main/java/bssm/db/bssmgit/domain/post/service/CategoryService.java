@@ -5,7 +5,7 @@ import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.post.entity.repository.CategoryRepository;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.global.config.security.SecurityUtil;
+import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

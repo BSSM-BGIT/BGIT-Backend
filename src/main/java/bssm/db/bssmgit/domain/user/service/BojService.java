@@ -3,7 +3,7 @@ package bssm.db.bssmgit.domain.user.service;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.*;
-import bssm.db.bssmgit.global.config.security.SecurityUtil;
+import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.google.gson.Gson;

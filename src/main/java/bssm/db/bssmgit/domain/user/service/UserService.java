@@ -8,14 +8,13 @@ import bssm.db.bssmgit.domain.user.web.dto.response.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
-import bssm.db.bssmgit.global.config.security.SecurityUtil;
+import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
