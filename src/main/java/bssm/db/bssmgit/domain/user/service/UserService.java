@@ -2,13 +2,12 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.BsmOauthResourceDto;
 import bssm.db.bssmgit.domain.user.web.dto.BsmOauthTokenDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
-import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,14 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
     private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
 
@@ -44,7 +42,7 @@ public class UserService {
     private String OAUTH_BSM_RESOURCE_URL;
 
     @Transactional
-    private User signup(BsmOauthResourceDto dto, String bsmToken) {
+    public void signup(BsmOauthResourceDto dto, String bsmToken) {
         User user = User.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())
@@ -56,7 +54,7 @@ public class UserService {
                 // 리팩토링 필요
                 .role(Role.ROLE_BSSM)
                 .build();
-        return userRepository.save(user);
+        userFacade.save(user);
     }
 
     @Transactional
@@ -95,33 +93,18 @@ public class UserService {
         BsmOauthResourceDto resourceDto = objectMapper.readValue(Objects.requireNonNull(resourceResponse.body()).string(), BsmOauthResourceDto.class);
 
         // 없는 유저면 회원가입 후 유저 리턴, 이미 있으면 유저를 바로 리턴
-        return userRepository.findByEmail(resourceDto.getEmail()).orElseGet(
-                () -> signup(resourceDto, tokenResponseDto.getToken())
-        );
+        return userFacade.findByEmailOrElseSignUp(resourceDto, tokenResponseDto);
     }
 
     public UserResponseDto getUser() {
-        return new UserResponseDto(
-                userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(
-                        () -> {
-                            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-                        }
-                )
-        );
+        return new UserResponseDto(userFacade.getCurrentUser());
     }
 
     public List<GithubResponseDto> findAllUserGitDesc() {
-        return userRepository.findGitAll().stream()
-                .filter(u -> u.getGithubId() != null)
-                .filter(u -> u.getCommits() != null)
-                .map(GithubResponseDto::new)
-                .collect(Collectors.toList());
+        return userFacade.findAllUserGitDesc();
     }
 
     public List<BojResponseDto> findAllUserBojDesc() {
-        return userRepository.findBojAll().stream()
-                .filter(u -> u.getBojId() != null)
-                .map(BojResponseDto::new)
-                .collect(Collectors.toList());
+        return userFacade.findAllUserBojDesc();
     }
 }

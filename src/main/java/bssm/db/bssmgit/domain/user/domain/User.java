@@ -95,7 +95,14 @@ public class User {
     private String randomCode;
 
     @Builder
-    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, Integer studentGrade, Integer studentClassNo, Integer studentNo, String name, String bsmToken, String githubId, Integer commits, String githubMsg, String githubImg, String bojId, Integer solvedCount, Integer rating, Integer tier, Integer maxStreak, String bojAuthId, String bojImg, String randomCode) {
+    public User(List<Post> posts, List<Category> categories, String password,
+                Role role, String email, Integer studentGrade,
+                Integer studentClassNo, Integer studentNo, String name,
+                String bsmToken, String githubId, Integer commits,
+                String githubMsg, String githubImg, String bojId,
+                Integer solvedCount, Integer rating, Integer tier,
+                Integer maxStreak, String bojAuthId, String bojImg,
+                String randomCode) {
         this.posts = posts;
         this.categories = categories;
         this.password = password;

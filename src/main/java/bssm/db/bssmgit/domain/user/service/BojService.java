@@ -1,9 +1,8 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.response.*;
-import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import com.google.gson.Gson;
@@ -22,15 +21,13 @@ import java.util.*;
 @Service
 public class BojService {
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
     private final static String URL = "https://solved.ac/api/v3/user/show?handle=";
     private final OkHttpClient okHttpClient;
 
     @Transactional
     public BojAuthenticationResultResDto matchedCode() throws IOException {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         Request tokenRequest = new Request.Builder()
                 .url(URL + user.getBojAuthId())
                 .build();
@@ -62,8 +59,7 @@ public class BojService {
 
     @Transactional
     public RandomCodeResponseDto getRandomCode(String bojId) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         String key = createKey();
         user.updateBojAuthId(bojId);
         user.updateRandomCode(key);
@@ -98,7 +94,7 @@ public class BojService {
     public void updateUserBojInfo() throws IOException {
         ArrayList<User> users = new ArrayList<>();
 
-        userRepository.findAll().stream().filter(u -> u.getBojId() != null)
+        userFacade.findAll().stream().filter(u -> u.getBojId() != null)
                 .forEach(u -> {
                             // Request
                             Request tokenRequest = new Request.Builder()
@@ -139,7 +135,7 @@ public class BojService {
                         }
                 );
 
-        userRepository.saveAll(users);
+        userFacade.saveAll(users);
 
     }
 
