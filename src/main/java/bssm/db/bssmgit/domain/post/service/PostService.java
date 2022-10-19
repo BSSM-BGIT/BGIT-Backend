@@ -5,8 +5,7 @@ import bssm.db.bssmgit.domain.post.entity.repository.PostRepository;
 import bssm.db.bssmgit.domain.post.web.dto.req.PostCreateRequestDto;
 import bssm.db.bssmgit.domain.post.web.dto.res.PostResponseDto;
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.global.util.SecurityUtil;
+import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
     private final PostRepository postRepository;
     private final CategoryService categoryService;
 
     @Transactional
     public Long createPost(PostCreateRequestDto request) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         Post post = postRepository.save(request.toEntity());
         post.confirmWriter(user);
 
@@ -81,9 +78,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
 
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         if (!Objects.equals(post.getWriter().getId(), user.getId())) {
             throw new CustomException(ErrorCode.DONT_ACCESS_OTHER);
         }
@@ -102,9 +97,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long id) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
 

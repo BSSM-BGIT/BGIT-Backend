@@ -4,10 +4,7 @@ import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.post.entity.repository.CategoryRepository;
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.global.util.SecurityUtil;
-import bssm.db.bssmgit.global.exception.CustomException;
-import bssm.db.bssmgit.global.exception.ErrorCode;
+import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CategoryService {
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
     private final CategoryRepository categoryRepository;
 
     @Transactional
     public void createCategory(Post post, String category) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+        User user = userFacade.getCurrentUser();
 
         Category ca = categoryRepository.save(
                 Category.builder()
