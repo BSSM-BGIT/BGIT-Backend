@@ -2,6 +2,7 @@ package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -94,6 +95,12 @@ public class User {
     @Column
     private String randomCode;
 
+    @Column
+    private Integer imaginaryNumber = 0;
+
+    @Enumerated(EnumType.STRING)
+    private Imaginary imaginary;
+
     @Builder
     public User(List<Post> posts, List<Category> categories, String password,
                 Role role, String email, Integer studentGrade,
@@ -102,7 +109,7 @@ public class User {
                 String githubMsg, String githubImg, String bojId,
                 Integer solvedCount, Integer rating, Integer tier,
                 Integer maxStreak, String bojAuthId, String bojImg,
-                String randomCode) {
+                String randomCode, Integer imaginaryNumber) {
         this.posts = posts;
         this.categories = categories;
         this.password = password;
@@ -125,6 +132,7 @@ public class User {
         this.bojAuthId = bojAuthId;
         this.bojImg = bojImg;
         this.randomCode = randomCode;
+        this.imaginaryNumber = imaginaryNumber;
     }
 
     // auth
@@ -173,5 +181,18 @@ public class User {
 
     public void addPosts(Post post) {
         this.posts.add(post);
+    }
+
+    public void upImaginaryNumber() {
+        this.imaginaryNumber++;
+    }
+
+    public void initImaginary() {
+        this.imaginaryNumber = 0;
+        this.imaginary = Imaginary.REAL_NUMBER;
+    }
+
+    public void updateImaginary() {
+        this.imaginary = Imaginary.IMAGINARY_NUMBER;
     }
 }

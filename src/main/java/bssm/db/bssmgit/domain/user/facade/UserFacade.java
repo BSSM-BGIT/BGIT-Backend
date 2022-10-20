@@ -72,6 +72,9 @@ public class UserFacade {
                 .collect(Collectors.toList());
     }
 
+    public List<User> findAllUserByImaginaryNumberDesc() {
+        return userRepository.findTop3ByOrderByImaginaryNumberDesc();
+    }
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -86,5 +89,9 @@ public class UserFacade {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public List<User> findUserImaginaryUser() {
+        return userRepository.findByUserImaginaryUser();
     }
 }

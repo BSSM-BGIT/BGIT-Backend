@@ -24,4 +24,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u order by u.rating DESC")
     List<User> findBojAll();
+
+    List<User> findTop3ByOrderByImaginaryNumberDesc();
+
+    @Query("select u from User u " +
+            "where u.imaginary = " +
+            "bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER")
+    List<User> findByUserImaginaryUser();
 }
