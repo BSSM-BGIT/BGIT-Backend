@@ -1,6 +1,7 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.GithubService;
+import bssm.db.bssmgit.domain.user.service.ImaginaryNumberService;
 import bssm.db.bssmgit.domain.user.service.UserService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
@@ -17,6 +18,7 @@ import java.util.List;
 public class UserApiController {
 
     private final UserService userService;
+    private final ImaginaryNumberService imaginaryNumberService;
     private final GithubService githubService;
 
     @GetMapping
@@ -34,6 +36,11 @@ public class UserApiController {
     public Result<List<BojResponseDto>> findByBojTierDesc() {
         List<BojResponseDto> allUserBojDesc = userService.findAllUserBojDesc();
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
+    }
+
+    @PostMapping("/voting/{userId}")
+    public void votingImaginaryNumber(@PathVariable Long userId) {
+        imaginaryNumberService.votingImaginaryNumber(userId);
     }
 
     @PostMapping("/test")

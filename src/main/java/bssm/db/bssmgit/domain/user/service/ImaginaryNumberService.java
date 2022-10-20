@@ -32,7 +32,7 @@ public class ImaginaryNumberService {
     }
 
     @Scheduled(cron = "0 * * * 4 ?") // 매주 목요일 투표 탑 3 허수 지정
-    public void votingImaginaryNumber() {
+    public void designation() {
         List<User> users = userFacade.findAllUserByImaginaryNumberDesc();
         for (User user : users) {
             user.updateImaginary();
@@ -40,7 +40,7 @@ public class ImaginaryNumberService {
     }
 
     @Transactional // 만약에 수요일이면 허수 투표 가능
-    public void upImaginaryNumber(Long userId) {
+    public void votingImaginaryNumber(Long userId) {
         if (LocalDate.now().getDayOfWeek().getValue() == WEDNESDAY) {
             User user = userFacade.findById(userId);
             user.upImaginaryNumber();
