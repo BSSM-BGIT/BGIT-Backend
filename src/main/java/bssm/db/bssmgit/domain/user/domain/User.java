@@ -131,6 +131,22 @@ public class User {
         }
     }
 
+    public void updateStudentGrade(Integer studentGrade) {
+        this.studentGrade = studentGrade;
+    }
+
+    public void updateStudentClassNo(Integer studentClassNo) {
+        this.studentClassNo = studentClassNo;
+    }
+
+    public void updateStudentNo(Integer studentNo) {
+        this.studentNo = studentNo;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public void updateGitId(String githubId) {
         this.githubId = githubId;
     }
