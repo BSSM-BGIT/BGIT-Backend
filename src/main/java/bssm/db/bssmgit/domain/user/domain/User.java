@@ -100,6 +100,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Imaginary imaginary;
 
+    @Column
+    private Integer votingCount;
+
     @Builder
     public User(Long id, List<Post> posts, List<Category> categories, String password,
                 Role role, String email, Integer studentGrade, Integer studentClassNo,
@@ -131,17 +134,6 @@ public class User {
         this.bojImg = bojImg;
         this.bojBio = bojBio;
         this.randomCode = randomCode;
-    }
-
-    // auth
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(password);
-    }
-
-    public void matchedPassword(PasswordEncoder passwordEncoder, User user, String password) {
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
-        }
     }
 
     public void updateGitId(String githubId) {
@@ -177,6 +169,10 @@ public class User {
         this.imaginary = Imaginary.REAL_NUMBER;
     }
 
+    public void initVotingCount() {
+        this.votingCount = 3;
+    }
+
     public void updateImaginary() {
         this.imaginary = Imaginary.IMAGINARY_NUMBER;
     }
@@ -187,6 +183,10 @@ public class User {
 
     public void addPosts(Post post) {
         this.posts.add(post);
+    }
+
+    public void reductionVotingCount() {
+        this.votingCount--;
     }
 
 }

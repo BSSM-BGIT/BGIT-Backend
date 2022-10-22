@@ -36,7 +36,11 @@ public class ImaginaryNumberService {
     @Scheduled(cron = "0 * * * 3 ?") // 매주 수요일 허수 관련 정보 초기화
     public void init() {
         userFacade.findAll()
-                        .forEach(User::initImaginary);
+                        .forEach(user ->
+                                {
+                                    user.initImaginary();
+                                    user.initVotingCount();
+                                });
         imaginaryNumberFacade.removeAll();
     }
 
@@ -63,6 +67,14 @@ public class ImaginaryNumberService {
     @Transactional // 만약에 수요일이면 허수 투표 가능
     public void votingImaginaryNumber(Long userId) { // WEDNESDAY
         if (LocalDate.now().getDayOfWeek().name().equals("SUNDAY")) {
+            User user = userFacade.getCurrentUser();
+            if (user.getVotingCount() == 0) {
+                throw new CustomException(ErrorCode.NOT_ENOUGH_VOTING_COUNT);
+            }
+
+            user.reductionVotingCount();
+            userFacade.save(user);
+
             Optional<ImaginaryNumber> optionalImaginaryNumber = imaginaryNumberFacade.findAll()
                     .stream()
                     .filter(imaginary -> Objects.equals(imaginary.getUserId(), userId))

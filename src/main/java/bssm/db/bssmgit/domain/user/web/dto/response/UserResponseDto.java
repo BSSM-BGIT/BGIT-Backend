@@ -1,6 +1,7 @@
 package bssm.db.bssmgit.domain.user.web.dto.response;
 
 import bssm.db.bssmgit.domain.user.domain.User;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +15,7 @@ public class UserResponseDto {
     private final String school;
     private final boolean githubAuth;
     private final boolean bojAuth;
+    private boolean isImaginaryNumber;
 
     public UserResponseDto(User user) {
         this.email = user.getEmail();
@@ -24,5 +26,8 @@ public class UserResponseDto {
         this.school = user.getRole().name();
         this.githubAuth = user.getGithubId() != null;
         this.bojAuth = user.getBojId() != null;
+        if (user.getImaginary().name().equals("IMAGINARY_NUMBER")) {
+            this.isImaginaryNumber = true;
+        }
     }
 }
