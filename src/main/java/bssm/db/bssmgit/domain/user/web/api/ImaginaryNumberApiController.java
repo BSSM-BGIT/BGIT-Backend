@@ -2,10 +2,7 @@ package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.user.service.ImaginaryNumberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,9 +11,14 @@ public class ImaginaryNumberApiController {
 
     private final ImaginaryNumberService imaginaryNumberService;
 
-    @PostMapping("/init")
+    @PostMapping("/init") // test
     public void initiate() {
         imaginaryNumberService.init();
+    }
+
+    @PutMapping("/designation") // test
+    public void designation() {
+        imaginaryNumberService.designationImaginaryNumber();
     }
 
     @PostMapping("/{userId}")
