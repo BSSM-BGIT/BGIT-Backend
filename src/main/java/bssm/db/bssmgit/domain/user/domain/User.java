@@ -13,6 +13,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -95,21 +97,17 @@ public class User {
     @Column
     private String randomCode;
 
-    @Column
-    private Integer imaginaryNumber = 0;
-
     @Enumerated(EnumType.STRING)
     private Imaginary imaginary;
 
     @Builder
-    public User(List<Post> posts, List<Category> categories, String password,
-                Role role, String email, Integer studentGrade,
-                Integer studentClassNo, Integer studentNo, String name,
-                String bsmToken, String githubId, Integer commits,
-                String githubMsg, String githubImg, String bojId,
-                Integer solvedCount, Integer rating, Integer tier,
-                Integer maxStreak, String bojAuthId, String bojImg,
-                String randomCode, Integer imaginaryNumber) {
+    public User(Long id, List<Post> posts, List<Category> categories, String password,
+                Role role, String email, Integer studentGrade, Integer studentClassNo,
+                Integer studentNo, String name, String bsmToken, String githubId,
+                Integer commits, String githubMsg, String githubImg, String bojId,
+                Integer solvedCount, Integer rating, Integer tier, Integer maxStreak,
+                String bojAuthId, String bojImg, String bojBio, String randomCode) {
+        this.id = id;
         this.posts = posts;
         this.categories = categories;
         this.password = password;
@@ -131,8 +129,8 @@ public class User {
         this.maxStreak = maxStreak;
         this.bojAuthId = bojAuthId;
         this.bojImg = bojImg;
+        this.bojBio = bojBio;
         this.randomCode = randomCode;
-        this.imaginaryNumber = imaginaryNumber;
     }
 
     // auth
@@ -175,6 +173,14 @@ public class User {
         this.bojBio = bio;
     }
 
+    public void initImaginary() {
+        this.imaginary = Imaginary.REAL_NUMBER;
+    }
+
+    public void updateImaginary() {
+        this.imaginary = Imaginary.IMAGINARY_NUMBER;
+    }
+
     public void addPostCategories(Category category) {
         this.categories.add(category);
     }
@@ -183,16 +189,4 @@ public class User {
         this.posts.add(post);
     }
 
-    public void upImaginaryNumber() {
-        this.imaginaryNumber++;
-    }
-
-    public void initImaginary() {
-        this.imaginaryNumber = 0;
-        this.imaginary = Imaginary.REAL_NUMBER;
-    }
-
-    public void updateImaginary() {
-        this.imaginary = Imaginary.IMAGINARY_NUMBER;
-    }
 }

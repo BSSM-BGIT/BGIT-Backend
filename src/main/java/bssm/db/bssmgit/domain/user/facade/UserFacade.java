@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 @Component
@@ -72,9 +71,10 @@ public class UserFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<User> findAllUserByImaginaryNumberDesc() {
-        return userRepository.findTop3ByOrderByImaginaryNumberDesc();
-    }
+//    public List<User> findAllUserByImaginaryNumberDesc() {
+//        return userRepository.findTop3ByOrderByImaginaryNumberDesc();
+//    }
+
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -91,7 +91,7 @@ public class UserFacade {
         return userRepository.findAll();
     }
 
-    public List<User> findUserImaginaryUser() {
-        return userRepository.findByUserImaginaryUser();
-    }
+//    public List<User> findUserImaginaryUser() {
+//        return userRepository.findByUserImaginaryUser();
+//    }
 }

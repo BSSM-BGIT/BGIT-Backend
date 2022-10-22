@@ -38,11 +38,6 @@ public class UserApiController {
         return new Result<>(allUserBojDesc.size(), allUserBojDesc);
     }
 
-    @PostMapping("/voting/{userId}")
-    public void votingImaginaryNumber(@PathVariable Long userId) {
-        imaginaryNumberService.votingImaginaryNumber(userId);
-    }
-
     @PostMapping("/test")
     public void test() {
         githubService.updateUser();
