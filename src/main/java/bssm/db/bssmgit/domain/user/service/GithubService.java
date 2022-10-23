@@ -38,6 +38,7 @@ public class GithubService {
 
     @Scheduled(cron = "0 3 * * * ?") // 매일 새벽 3시
     public void updateUser() {
+
         try {
             connectToGithub(token);
         } catch (IOException e) {

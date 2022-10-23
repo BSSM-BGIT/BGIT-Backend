@@ -30,7 +30,9 @@ public enum ErrorCode {
     NOT_MATCH_TOKEN(402, "토큰이 일치하지 않습니다."),
     RETRY_LOGIN(402, "로그인을 다시 해주세요."),
 
-    GIT_CONNECTION_REFUSED(511, "깃허브 커넥션이 불안정합니다.");
+    GIT_CONNECTION_REFUSED(511, "깃허브 커넥션이 불안정합니다."),
+    NOT_SUPPORTED_DAY(403, "허수 투표는 수요일에만 할 수 있습니다."),
+    NOT_ENOUGH_VOTING_COUNT(500, "이번주 허수 투표는 더 이상 할 수 없습니다.");
 
     private final int code;
     private final String message;

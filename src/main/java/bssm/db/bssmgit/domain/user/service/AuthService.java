@@ -1,7 +1,7 @@
 package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
+import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
 import bssm.db.bssmgit.domain.user.web.dto.request.OauthAttributes;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
@@ -9,7 +9,6 @@ import bssm.db.bssmgit.domain.user.web.dto.response.OauthTokenResponse;
 import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
 import bssm.db.bssmgit.global.util.CookieUtil;
-import bssm.db.bssmgit.global.util.SecurityUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
@@ -45,7 +44,7 @@ import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserFacade userFacade;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtValidateService jwtValidateService;
     private final CookieUtil cookieUtil;
@@ -60,15 +59,6 @@ public class AuthService {
 
     @Value("${spring.security.oauth2.user.github.redirect-url}")
     private String redirectUrl;
-
-    @Value("${spring.security.oauth2.user.github.test-redirect-url}")
-    private String testRedirectUrl;
-
-    @Value("${spring.security.oauth2.user.github.test-client-id}")
-    private String testClientId;
-
-    @Value("${spring.security.oauth2.user.github.test-client-secret}")
-    private String testClientSecret;
 
     @Value("${spring.security.oauth2.provider.github.token-uri}")
     private String tokenUrl;
@@ -100,9 +90,7 @@ public class AuthService {
 
     @Transactional
     public void logout(String accessToken) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         jwtTokenProvider.logout(user.getEmail(), accessToken);
     }
 
@@ -141,9 +129,7 @@ public class AuthService {
 
         UserProfile userProfile = getUserProfile(tokenResponse);
 
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
-
+        User user = userFacade.getCurrentUser();
         if (user.getGithubId() == null) {
 
             user.updateGitId(userProfile.getGitId());
@@ -153,7 +139,7 @@ public class AuthService {
             String img = github.getUser(userProfile.getGitId()).getAvatarUrl();
 
             user.updateGitInfo(commits, bio, img);
-            userRepository.save(user);
+            userFacade.save(user);
         }
 
 
@@ -161,8 +147,7 @@ public class AuthService {
     }
 
     public int getUserCommit(String githubId) {
-        User user = userRepository.findByEmail(SecurityUtil.getLoginUserEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_LOGIN));
+        User user = userFacade.getCurrentUser();
         try {
             String commits = null;
             boolean b = false;

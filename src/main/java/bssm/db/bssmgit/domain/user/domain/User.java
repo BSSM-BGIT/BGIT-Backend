@@ -2,6 +2,7 @@ package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -94,8 +96,20 @@ public class User {
     @Column
     private String randomCode;
 
+    @Enumerated(EnumType.STRING)
+    private Imaginary imaginary;
+
+    @Column
+    private Integer votingCount;
+
     @Builder
-    public User(List<Post> posts, List<Category> categories, String password, Role role, String email, Integer studentGrade, Integer studentClassNo, Integer studentNo, String name, String bsmToken, String githubId, Integer commits, String githubMsg, String githubImg, String bojId, Integer solvedCount, Integer rating, Integer tier, Integer maxStreak, String bojAuthId, String bojImg, String randomCode) {
+    public User(Long id, List<Post> posts, List<Category> categories, String password,
+                Role role, String email, Integer studentGrade, Integer studentClassNo,
+                Integer studentNo, String name, String bsmToken, String githubId,
+                Integer commits, String githubMsg, String githubImg, String bojId,
+                Integer solvedCount, Integer rating, Integer tier, Integer maxStreak,
+                String bojAuthId, String bojImg, String bojBio, String randomCode) {
+        this.id = id;
         this.posts = posts;
         this.categories = categories;
         this.password = password;
@@ -117,6 +131,7 @@ public class User {
         this.maxStreak = maxStreak;
         this.bojAuthId = bojAuthId;
         this.bojImg = bojImg;
+        this.bojBio = bojBio;
         this.randomCode = randomCode;
     }
 
@@ -165,7 +180,6 @@ public class User {
         this.randomCode = randomCode;
     }
 
-
     public void updateUserBojInfo(String bojId, Integer solvedCount, Integer tier, Integer rating, Integer maxStreak, String bojImg, String bio) {
         this.bojId = bojId;
         this.solvedCount = solvedCount;
@@ -176,6 +190,18 @@ public class User {
         this.bojBio = bio;
     }
 
+    public void initImaginary() {
+        this.imaginary = Imaginary.REAL_NUMBER;
+    }
+
+    public void initVotingCount() {
+        this.votingCount = 3;
+    }
+
+    public void updateImaginary() {
+        this.imaginary = Imaginary.IMAGINARY_NUMBER;
+    }
+
     public void addPostCategories(Category category) {
         this.categories.add(category);
     }
@@ -183,4 +209,9 @@ public class User {
     public void addPosts(Post post) {
         this.posts.add(post);
     }
+
+    public void reductionVotingCount() {
+        this.votingCount--;
+    }
+
 }
