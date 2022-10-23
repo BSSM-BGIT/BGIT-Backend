@@ -80,7 +80,7 @@ public class AuthService {
         redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
         Cookie accessTokenCookie = cookieUtil.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
-        Cookie refreshTokenCookie = cookieUtil.createCookie("REFRESH-TOKEN", accessToken, REFRESH_TOKEN_VALID_TIME);
+        Cookie refreshTokenCookie = cookieUtil.createCookie("REFRESH-TOKEN", refreshToken, REFRESH_TOKEN_VALID_TIME);
 
         return TokenResponseDto.builder()
                 .accessToken(accessTokenCookie)
