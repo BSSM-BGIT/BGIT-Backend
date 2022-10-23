@@ -24,15 +24,6 @@ public class ImaginaryNumberService {
     private final UserFacade userFacade;
     private final ImaginaryNumberFacade imaginaryNumberFacade;
 
-    //=============================/ 완료
-    // 허수 판독 기능 추가
-    // 매주 수요일마다 허수 판독 기능 실행
-    // 랭킹에 올라와있는 사람들에게 투표 가능
-    //=============================/
-    // 한사람당 3명씩 투표 가능
-    // 중복 투표 불가능
-    // 허수 투표 랭킹 1, 2, 3등 허수 칭호
-
     @Scheduled(cron = "0 * * * 3 ?") // 매주 수요일 허수 관련 정보 초기화
     public void init() {
         userFacade.findAll()
@@ -64,6 +55,7 @@ public class ImaginaryNumberService {
         userFacade.saveAll(users);
     }
 
+    // TODO: 리팩터링 필요
     @Transactional // 만약에 수요일이면 허수 투표 가능
     public void votingImaginaryNumber(Long userId) { // WEDNESDAY
         if (LocalDate.now().getDayOfWeek().name().equals("SUNDAY")) {
