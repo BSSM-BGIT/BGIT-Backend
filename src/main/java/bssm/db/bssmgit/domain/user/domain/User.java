@@ -13,7 +13,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.CascadeType.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -136,6 +135,33 @@ public class User {
         this.randomCode = randomCode;
     }
 
+    // auth
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void matchedPassword(PasswordEncoder passwordEncoder, User user, String password) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
+        }
+    }
+
+    public void updateStudentGrade(Integer studentGrade) {
+        this.studentGrade = studentGrade;
+    }
+
+    public void updateStudentClassNo(Integer studentClassNo) {
+        this.studentClassNo = studentClassNo;
+    }
+
+    public void updateStudentNo(Integer studentNo) {
+        this.studentNo = studentNo;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public void updateGitId(String githubId) {
         this.githubId = githubId;
     }
@@ -153,7 +179,6 @@ public class User {
     public void updateRandomCode(String randomCode) {
         this.randomCode = randomCode;
     }
-
 
     public void updateUserBojInfo(String bojId, Integer solvedCount, Integer tier, Integer rating, Integer maxStreak, String bojImg, String bio) {
         this.bojId = bojId;
