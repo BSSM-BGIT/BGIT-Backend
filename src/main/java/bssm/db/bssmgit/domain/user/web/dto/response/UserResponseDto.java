@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class UserResponseDto {
 
+    private final Long userId;
     private final String email;
     private final int studentGrade;
     private final int studentClassNo;
@@ -18,6 +19,7 @@ public class UserResponseDto {
     private boolean isImaginaryNumber;
 
     public UserResponseDto(User user) {
+        this.userId = user.getId();
         this.email = user.getEmail();
         this.studentGrade = user.getStudentGrade();
         this.studentClassNo = user.getStudentClassNo();
