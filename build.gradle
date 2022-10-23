@@ -16,6 +16,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -49,6 +50,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'com.github.leehj050211:bsm-oauth-java:1.0.0'
 }
 
 tasks.named('test') {
