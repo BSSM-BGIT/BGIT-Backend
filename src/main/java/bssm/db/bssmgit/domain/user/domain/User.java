@@ -29,6 +29,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Category> categories = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<ImaginaryNumber> imaginaryNumbers = new ArrayList<>();
+
     @Column(length = 128)
     private String password;
 
@@ -133,17 +136,6 @@ public class User {
         this.bojImg = bojImg;
         this.bojBio = bojBio;
         this.randomCode = randomCode;
-    }
-
-    // auth
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(password);
-    }
-
-    public void matchedPassword(PasswordEncoder passwordEncoder, User user, String password) {
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
-        }
     }
 
     public void updateStudentGrade(Integer studentGrade) {

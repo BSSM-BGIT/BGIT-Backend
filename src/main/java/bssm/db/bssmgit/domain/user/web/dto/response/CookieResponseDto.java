@@ -7,7 +7,7 @@ import javax.servlet.http.Cookie;
 
 @Getter
 @Builder
-public class TokenResponseDto {
+public class CookieResponseDto {
 
     private Cookie accessToken;
     private Cookie refreshToken;

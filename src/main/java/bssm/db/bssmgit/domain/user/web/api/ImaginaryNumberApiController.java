@@ -11,18 +11,4 @@ public class ImaginaryNumberApiController {
 
     private final ImaginaryNumberService imaginaryNumberService;
 
-    @PostMapping("/init") // test
-    public void initiate() {
-        imaginaryNumberService.init();
-    }
-
-    @PutMapping("/designation") // test
-    public void designation() {
-        imaginaryNumberService.designationImaginaryNumber();
-    }
-
-    @PostMapping("/{userId}")
-    public void voting(@PathVariable Long userId) {
-        imaginaryNumberService.votingImaginaryNumber(userId);
-    }
 }

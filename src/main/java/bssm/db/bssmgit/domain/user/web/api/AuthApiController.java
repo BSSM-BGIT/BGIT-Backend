@@ -5,7 +5,7 @@ import bssm.db.bssmgit.domain.user.service.BojService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class AuthApiController {
     private final BojService bojService;
 
     @PostMapping("/auth/oauth/bsm")
-    public TokenResponseDto loginBsm(HttpServletRequest request) throws IOException {
+    public CookieResponseDto loginBsm(HttpServletRequest request) throws IOException {
         return authService.bsmLogin(request.getHeader("authCode"));
     }
 
@@ -42,7 +42,7 @@ public class AuthApiController {
     }
 
     @PutMapping("/refresh")
-    public TokenResponseDto getNewAccessToken(HttpServletRequest request) {
+    public CookieResponseDto getNewAccessToken(HttpServletRequest request) {
         String refreshToken = request.getHeader("REFRESH-TOKEN");
         return authService.getNewAccessToken(refreshToken);
     }

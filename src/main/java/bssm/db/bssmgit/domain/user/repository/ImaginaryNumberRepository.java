@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ImaginaryNumberRepository extends JpaRepository<ImaginaryNumber, Long> {
 
-    List<ImaginaryNumber> findTop3ByOrderByVotingNumberDesc();
+//    List<ImaginaryNumber> findTop3ByOrderByVotingNumberDesc();
 
 }

@@ -17,9 +17,6 @@ public class ImaginaryNumberFacade {
         return imaginaryNumberRepository.save(imaginaryNumber);
     }
 
-    public List<ImaginaryNumber> findUsersByTop3() {
-        return imaginaryNumberRepository.findTop3ByOrderByVotingNumberDesc();
-    }
     public List<ImaginaryNumber> findAll() {
         return imaginaryNumberRepository.findAll();
     }

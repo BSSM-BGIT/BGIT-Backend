@@ -5,8 +5,9 @@ import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
 import bssm.db.bssmgit.domain.user.web.dto.request.OauthAttributes;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.JwtResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.OauthTokenResponse;
-import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
 import bssm.db.bssmgit.global.util.CookieProvider;
 import bssm.db.bssmgit.global.exception.CustomException;
@@ -26,7 +27,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.servlet.http.Cookie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import static bssm.db.bssmgit.global.jwt.JwtProperties.ACCESS_TOKEN_VALID_TIME;
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 
 @RequiredArgsConstructor
@@ -72,14 +71,19 @@ public class AuthService {
     GitHub github;
 
     @Transactional
-    public TokenResponseDto bsmLogin(String authCode) throws IOException {
+    public CookieResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
+        JwtResponseDto jwt = createJwt(user);
 
+        return cookieProvider.jwtToCookies(jwt.getAccessToken(), jwt.getRefreshToken());
+    }
+
+    private JwtResponseDto createJwt(User user) {
         final String accessToken = jwtProvider.createAccessToken(user.getEmail());
         final String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
         redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
-        return cookieProvider.jwtToCookies(accessToken, refreshToken);
+        return new JwtResponseDto(accessToken, refreshToken);
     }
 
     @Transactional
@@ -89,14 +93,11 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponseDto getNewAccessToken(String refreshToken) {
+    public CookieResponseDto getNewAccessToken(String refreshToken) {
         jwtValidateService.validateRefreshToken(refreshToken);
 
         String accessToken = jwtProvider.createAccessToken(jwtValidateService.getEmail(refreshToken));
-        Cookie accessTokenCookie = cookieProvider.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
-        return TokenResponseDto.builder()
-                .accessToken(accessTokenCookie)
-                .build();
+        return cookieProvider.jwtToCookies(accessToken, null);
     }
 
     @Transactional
@@ -141,7 +142,7 @@ public class AuthService {
     }
 
     public int getUserCommit(String githubId) {
-        User user = userFacade.getCurrentUser();
+        userFacade.getCurrentUser();
         try {
             String commits = null;
             boolean b = false;

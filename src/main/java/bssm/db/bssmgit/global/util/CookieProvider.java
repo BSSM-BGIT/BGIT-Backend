@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.global.util;
 
-import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
@@ -33,11 +33,11 @@ public class CookieProvider {
         return null;
     }
 
-    public TokenResponseDto jwtToCookies(String accessToken, String refreshToken) {
+    public CookieResponseDto jwtToCookies(String accessToken, String refreshToken) {
         Cookie accessTokenCookie = createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
         Cookie refreshTokenCookie = createCookie("REFRESH-TOKEN", refreshToken, REFRESH_TOKEN_VALID_TIME);
 
-        return TokenResponseDto.builder()
+        return CookieResponseDto.builder()
                 .accessToken(accessTokenCookie)
                 .refreshToken(refreshTokenCookie)
                 .build();

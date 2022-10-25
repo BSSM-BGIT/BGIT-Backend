@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
@@ -18,20 +19,10 @@ public class ImaginaryNumber extends BaseTimeEntity {
     private Long id;
 
     @Column
-    private Long userId;
+    private Long reportedUserId;
 
-    @Column
-    private Integer votingNumber;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "do_report_user_id")
+    private User user;
 
-    public ImaginaryNumber(Long userId) {
-        this.userId = userId;
-    }
-
-    public void increaseVoting() {
-        votingNumber++;
-    }
-
-    public void initVotingNumber() {
-        this.votingNumber = 0;
-    }
 }
