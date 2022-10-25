@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/voting")
+@RequestMapping("/report")
 public class ImaginaryNumberApiController {
 
     private final ImaginaryNumberService imaginaryNumberService;
@@ -16,4 +16,8 @@ public class ImaginaryNumberApiController {
         imaginaryNumberService.reportUser(userId);
     }
 
+    @PutMapping("/update/test")
+    public void updateTest() {
+        imaginaryNumberService.updateImaginaryNumberUser();
+    }
 }
