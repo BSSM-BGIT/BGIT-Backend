@@ -81,7 +81,7 @@ public class AuthService {
     private JwtResponseDto createJwt(User user) {
         final String accessToken = jwtProvider.createAccessToken(user.getEmail());
         final String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
-        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
+        redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME * 1000);
 
         return new JwtResponseDto(accessToken, refreshToken);
     }

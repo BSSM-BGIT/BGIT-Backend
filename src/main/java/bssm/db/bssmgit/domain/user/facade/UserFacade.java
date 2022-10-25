@@ -10,6 +10,8 @@ import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.util.SecurityUtil;
 import leehj050211.bsmOauth.dto.response.BsmResourceResponse;
 import leehj050211.bsmOauth.dto.response.BsmStudentResponse;
+import leehj050211.bsmOauth.dto.response.BsmTeacherResponse;
+import leehj050211.bsmOauth.type.BsmAuthUserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,20 @@ public class UserFacade {
     }
 
     @Transactional
+    private User bsmTeacherSignup(BsmResourceResponse dto, String bsmToken) {
+        BsmTeacherResponse teacher = dto.getTeacher();
+
+        User user = User.builder()
+                .email(dto.getEmail())
+                .name(teacher.getName())
+                .bsmToken(bsmToken)
+                .role(Role.ROLE_BSSM)
+                .build();
+        save(user);
+        return user;
+    }
+
+    @Transactional
     private User bsmUserUpdate(User user, BsmResourceResponse dto) {
         BsmStudentResponse student = dto.getStudent();
         user.updateName(student.getName());
@@ -62,11 +78,19 @@ public class UserFacade {
     }
 
     public User getAndUpdateOrElseSignUp(BsmResourceResponse resource, String token) {
-        Optional<User> user = userRepository.findByEmail(resource.getEmail());
+        Optional<User> user = findByEmail(resource.getEmail());
         if (user.isEmpty()) {
-            return bsmSignup(resource, token);
+            if (resource.getRole() == BsmAuthUserRole.STUDENT) {
+                return bsmSignup(resource, token);
+            } else if (resource.getRole() == BsmAuthUserRole.TEACHER){
+                return bsmTeacherSignup(resource, token);
+            }
         }
         return bsmUserUpdate(user.get(), resource);
+    }
+
+    private Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public List<GithubResponseDto> findAllUserGitDesc() {

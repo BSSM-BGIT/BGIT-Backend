@@ -41,7 +41,7 @@ public class AuthApiController {
         return bojService.matchedCode();
     }
 
-    @PostMapping("/refresh")
+    @PutMapping("/refresh")
     public CookieResponseDto getNewAccessToken(HttpServletRequest request) {
         String refreshToken = request.getHeader("REFRESH-TOKEN");
         return authService.getNewAccessToken(refreshToken);
