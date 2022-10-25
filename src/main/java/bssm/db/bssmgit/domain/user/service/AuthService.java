@@ -8,10 +8,10 @@ import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.OauthTokenResponse;
 import bssm.db.bssmgit.domain.user.web.dto.response.TokenResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
-import bssm.db.bssmgit.global.util.CookieUtil;
+import bssm.db.bssmgit.global.util.CookieProvider;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
-import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
+import bssm.db.bssmgit.global.jwt.JwtProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +45,9 @@ import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
 public class AuthService {
 
     private final UserFacade userFacade;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final JwtValidateService jwtValidateService;
-    private final CookieUtil cookieUtil;
+    private final CookieProvider cookieProvider;
     private final RedisService redisService;
     private final UserService userService;
 
@@ -75,31 +75,25 @@ public class AuthService {
     public TokenResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
 
-        final String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
-        final String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+        final String accessToken = jwtProvider.createAccessToken(user.getEmail());
+        final String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
         redisService.setDataExpire(user.getEmail(), refreshToken, REFRESH_TOKEN_VALID_TIME);
 
-        Cookie accessTokenCookie = cookieUtil.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
-        Cookie refreshTokenCookie = cookieUtil.createCookie("REFRESH-TOKEN", refreshToken, REFRESH_TOKEN_VALID_TIME);
-
-        return TokenResponseDto.builder()
-                .accessToken(accessTokenCookie)
-                .refreshToken(refreshTokenCookie)
-                .build();
+        return cookieProvider.jwtToCookies(accessToken, refreshToken);
     }
 
     @Transactional
     public void logout(String accessToken) {
         User user = userFacade.getCurrentUser();
-        jwtTokenProvider.logout(user.getEmail(), accessToken);
+        jwtProvider.logout(user.getEmail(), accessToken);
     }
 
     @Transactional
     public TokenResponseDto getNewAccessToken(String refreshToken) {
         jwtValidateService.validateRefreshToken(refreshToken);
 
-        String accessToken = jwtTokenProvider.createAccessToken(jwtValidateService.getEmail(refreshToken));
-        Cookie accessTokenCookie = cookieUtil.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
+        String accessToken = jwtProvider.createAccessToken(jwtValidateService.getEmail(refreshToken));
+        Cookie accessTokenCookie = cookieProvider.createCookie("ACCESS-TOKEN", accessToken, ACCESS_TOKEN_VALID_TIME);
         return TokenResponseDto.builder()
                 .accessToken(accessTokenCookie)
                 .build();

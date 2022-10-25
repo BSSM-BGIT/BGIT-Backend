@@ -2,7 +2,7 @@ package bssm.db.bssmgit.global.config.security;
 
 import bssm.db.bssmgit.global.auth.CustomUserDetailService;
 import bssm.db.bssmgit.global.jwt.JwtAuthenticationFilter;
-import bssm.db.bssmgit.global.jwt.JwtTokenProvider;
+import bssm.db.bssmgit.global.jwt.JwtProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
 import bssm.db.bssmgit.global.jwt.exception.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final CustomUserDetailService customUserDetailService;
     private final JwtValidateService jwtValidateService;
 
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailService, jwtValidateService),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, customUserDetailService, jwtValidateService),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
     }

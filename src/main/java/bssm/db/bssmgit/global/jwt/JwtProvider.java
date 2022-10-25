@@ -26,7 +26,7 @@ import static bssm.db.bssmgit.global.jwt.JwtProperties.JWT_ACCESS;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
     private final RedisService redisService;
 
