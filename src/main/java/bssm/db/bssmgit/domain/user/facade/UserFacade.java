@@ -1,6 +1,7 @@
 package bssm.db.bssmgit.domain.user.facade;
 
 import bssm.db.bssmgit.domain.user.domain.User;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static leehj050211.bsmOauth.type.BsmAuthUserRole.*;
 
 @Component
 @RequiredArgsConstructor
@@ -48,6 +51,7 @@ public class UserFacade {
                 .studentNo(student.getStudentNo())
                 .bsmToken(bsmToken)
                 .role(Role.ROLE_BSSM)
+                .imaginary(Imaginary.REAL_NUMBER)
                 .build();
         save(user);
         return user;
@@ -62,6 +66,7 @@ public class UserFacade {
                 .name(teacher.getName())
                 .bsmToken(bsmToken)
                 .role(Role.ROLE_BSSM)
+                .imaginary(Imaginary.REAL_NUMBER)
                 .build();
         save(user);
         return user;
@@ -78,15 +83,23 @@ public class UserFacade {
     }
 
     public User getAndUpdateOrElseSignUp(BsmResourceResponse resource, String token) {
-        Optional<User> user = findByEmail(resource.getEmail());
-        if (user.isEmpty()) {
-            if (resource.getRole() == BsmAuthUserRole.STUDENT) {
+        Optional<User> userOptional = findByEmail(resource.getEmail());
+        if (userOptional.isEmpty()) {
+            if (resource.getRole() == STUDENT) {
                 return bsmSignup(resource, token);
-            } else if (resource.getRole() == BsmAuthUserRole.TEACHER){
+            } else if (resource.getRole() == TEACHER){
                 return bsmTeacherSignup(resource, token);
             }
         }
-        return bsmUserUpdate(user.get(), resource);
+        User user = userOptional.get();
+        System.out.println("user.getRole() = " + user.getRole());
+        System.out.println("user.getRole() = " + user.getRole());
+        System.out.println("user.getRole() = " + user.getRole());
+        System.out.println("user.getRole() = " + user.getRole());
+        System.out.println("user.getRole() = " + user.getRole());
+        System.out.println("user.getRole() = " + user.getRole());
+
+        return bsmUserUpdate(user, resource);
     }
 
     private Optional<User> findByEmail(String email) {

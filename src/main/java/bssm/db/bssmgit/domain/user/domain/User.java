@@ -4,23 +4,25 @@ import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
-import bssm.db.bssmgit.global.exception.CustomException;
-import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "writer")
@@ -39,7 +41,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column
     private String email;
 
     @Column
@@ -104,39 +105,6 @@ public class User {
 
     @Column
     private Integer votingCount;
-
-    @Builder
-    public User(Long id, List<Post> posts, List<Category> categories, String password,
-                Role role, String email, Integer studentGrade, Integer studentClassNo,
-                Integer studentNo, String name, String bsmToken, String githubId,
-                Integer commits, String githubMsg, String githubImg, String bojId,
-                Integer solvedCount, Integer rating, Integer tier, Integer maxStreak,
-                String bojAuthId, String bojImg, String bojBio, String randomCode) {
-        this.id = id;
-        this.posts = posts;
-        this.categories = categories;
-        this.password = password;
-        this.role = role;
-        this.email = email;
-        this.studentGrade = studentGrade;
-        this.studentClassNo = studentClassNo;
-        this.studentNo = studentNo;
-        this.name = name;
-        this.bsmToken = bsmToken;
-        this.githubId = githubId;
-        this.commits = commits;
-        this.githubMsg = githubMsg;
-        this.githubImg = githubImg;
-        this.bojId = bojId;
-        this.solvedCount = solvedCount;
-        this.rating = rating;
-        this.tier = tier;
-        this.maxStreak = maxStreak;
-        this.bojAuthId = bojAuthId;
-        this.bojImg = bojImg;
-        this.bojBio = bojBio;
-        this.randomCode = randomCode;
-    }
 
     public void updateStudentGrade(Integer studentGrade) {
         this.studentGrade = studentGrade;
