@@ -96,7 +96,7 @@ public class UserFacade {
 
         if (resource.getRole() == STUDENT) {
             return bsmUserUpdate(user, resource);
-        } else return null;
+        } else return user;
     }
 
     private Optional<User> findByEmail(String email) {

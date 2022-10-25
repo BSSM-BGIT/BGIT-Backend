@@ -74,7 +74,6 @@ public class AuthService {
     public CookieResponseDto bsmLogin(String authCode) throws IOException {
         User user = userService.bsmOauth(authCode);
         JwtResponseDto jwt = createJwt(user);
-
         return cookieProvider.jwtToCookies(jwt.getAccessToken(), jwt.getRefreshToken());
     }
 
