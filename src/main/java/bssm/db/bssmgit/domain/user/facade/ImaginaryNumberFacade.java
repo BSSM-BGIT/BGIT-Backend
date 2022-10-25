@@ -21,6 +21,9 @@ public class ImaginaryNumberFacade {
         return imaginaryNumberRepository.findAll();
     }
 
+    public List<ImaginaryNumber> findByReportedUserId(Long userId) {
+        return imaginaryNumberRepository.findByReportedUserId(userId);
+    }
     public void remove(ImaginaryNumber imaginaryNumber) {
         imaginaryNumberRepository.delete(imaginaryNumber);
     }

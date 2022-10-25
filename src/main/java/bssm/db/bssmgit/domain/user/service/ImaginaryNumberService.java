@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.user.service;
 
+import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -24,8 +26,8 @@ public class ImaginaryNumberService {
 
     public void reportUser(Long userId) {
         User user = userFacade.getCurrentUser();
-        boolean isAlreadyReportedUserExists = imaginaryNumberFacade.findAll()
-                .stream()
+        List<ImaginaryNumber> imaginaryNumbers = imaginaryNumberFacade.findByReportedUserId(userId);
+        boolean isAlreadyReportedUserExists = imaginaryNumbers.stream()
                 .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getUser().getId(), user.getId()));
 
         if (isAlreadyReportedUserExists) {
