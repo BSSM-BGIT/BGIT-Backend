@@ -12,7 +12,6 @@ import bssm.db.bssmgit.global.util.SecurityUtil;
 import leehj050211.bsmOauth.dto.response.BsmResourceResponse;
 import leehj050211.bsmOauth.dto.response.BsmStudentResponse;
 import leehj050211.bsmOauth.dto.response.BsmTeacherResponse;
-import leehj050211.bsmOauth.type.BsmAuthUserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

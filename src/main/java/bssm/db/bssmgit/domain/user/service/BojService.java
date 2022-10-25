@@ -5,6 +5,7 @@ import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.response.*;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
+import bssm.db.bssmgit.global.util.Constants;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
+
+import static bssm.db.bssmgit.global.exception.ErrorCode.USER_NOT_FOUND;
+import static bssm.db.bssmgit.global.util.Constants.every5minutes;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class BojService {
                 .build();
         Response bojResponse = okHttpClient.newCall(tokenRequest).execute();
         if (bojResponse.code() == 404) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            throw new CustomException(USER_NOT_FOUND);
         }
 
         assert bojResponse.body() != null;
@@ -90,7 +94,7 @@ public class BojService {
         return key.toString();
     }
 
-    @Scheduled(cron = "0 4 * * * ?") // 매일 새벽 4시
+    @Scheduled(cron = every5minutes) // 매일 새벽 4시
     public void updateUserBojInfo() throws IOException {
         ArrayList<User> users = new ArrayList<>();
 
@@ -107,7 +111,7 @@ public class BojService {
                                 throw new RuntimeException(e);
                             }
                             if (bojResponse.code() == 404) {
-                                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                                throw new CustomException(USER_NOT_FOUND);
                             }
 
                             assert bojResponse.body() != null;

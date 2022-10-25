@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface ImaginaryNumberRepository extends JpaRepository<ImaginaryNumber, Long> {
 
-//    List<ImaginaryNumber> findTop3ByOrderByVotingNumberDesc();
-
     @Query("select i from ImaginaryNumber i where i.reportedUserId = :userId")
     List<ImaginaryNumber> findByReportedUserId(@Param("userId") Long userId);
 }

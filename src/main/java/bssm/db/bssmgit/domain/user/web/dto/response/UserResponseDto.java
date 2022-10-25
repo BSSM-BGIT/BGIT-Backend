@@ -1,7 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.dto.response;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import lombok.Getter;
 
 @Getter

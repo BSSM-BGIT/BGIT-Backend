@@ -8,6 +8,7 @@ import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.request.ImaginaryNumberRequestDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
+import bssm.db.bssmgit.global.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER;
+import static bssm.db.bssmgit.global.util.Constants.every50minutes;
 
 @RequiredArgsConstructor
 @Service
@@ -40,7 +43,7 @@ public class ImaginaryNumberService {
         imaginaryNumberFacade.save(imaginaryNumberRequestDto.toImaginaryNumber());
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *") // TODO: REFACTOR
+    @Scheduled(cron = every50minutes) // TODO: REFACTOR
     public void updateImaginaryNumberUser() {
         ArrayList<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
@@ -60,7 +63,7 @@ public class ImaginaryNumberService {
         userFacade.saveAll(users);
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *") // TODO: REFACTOR
+    @Scheduled(cron = every50minutes) // TODO: REFACTOR
     public void removeOldReport() {
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> {
@@ -71,7 +74,8 @@ public class ImaginaryNumberService {
                 });
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *") // TODO: REFACTOR
+    // TODO: 만약 신고가 다 사라져서 조회할 수 있는 userId가 없는 상태일 때
+    @Scheduled(cron = every50minutes) // TODO: REFACTOR
     public void rollbackRealNumber() {
         ArrayList<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
@@ -84,7 +88,7 @@ public class ImaginaryNumberService {
                     .count();
             if (total < 3) {
                 User user = userFacade.findById(userId);
-                if (user.getImaginary() == Imaginary.IMAGINARY_NUMBER) {
+                if (user.getImaginary() == IMAGINARY_NUMBER) {
                     user.initImaginary();
                 }
             }

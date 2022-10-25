@@ -4,6 +4,7 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
+import bssm.db.bssmgit.global.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GitHub;
@@ -18,6 +19,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
+import static bssm.db.bssmgit.global.exception.ErrorCode.GIT_CONNECTION_REFUSED;
+import static bssm.db.bssmgit.global.util.Constants.every5minutes;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,13 +40,13 @@ public class GithubService {
         github.checkApiUrlValidity();
     }
 
-    @Scheduled(cron = "0 3 * * * ?") // 매일 새벽 3시
+    @Scheduled(cron = every5minutes)
     public void updateUser() {
 
         try {
             connectToGithub(token);
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.GIT_CONNECTION_REFUSED);
+            throw new CustomException(GIT_CONNECTION_REFUSED);
         }
 
         ArrayList<User> users = new ArrayList<>();
@@ -54,7 +58,7 @@ public class GithubService {
                         String commits = null;
                         boolean b = false;
 
-                        URL url = new URL("https://github.com/" + u.getGithubId());
+                        URL url = new URL(Constants.githubUrl + u.getGithubId());
                         URLConnection uc = url.openConnection();
                         BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 
@@ -64,7 +68,7 @@ public class GithubService {
                                 commits = inputLine;
                                 break;
                             }
-                            if (inputLine.contains("<h2 class=\"f4 text-normal mb-2\">")) {
+                            if (inputLine.contains(Constants.regexForCommit)) {
                                 b = true;
                             }
                         }
