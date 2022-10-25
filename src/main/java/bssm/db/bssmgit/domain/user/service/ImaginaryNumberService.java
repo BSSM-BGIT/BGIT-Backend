@@ -2,6 +2,7 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.request.ImaginaryNumberRequestDto;
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -63,9 +65,19 @@ public class ImaginaryNumberService {
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> {
                     long between = ChronoUnit.WEEKS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
-                    if (between > 2) {
+                    if (between > 1) {
                         imaginaryNumberFacade.remove(imaginaryNumber);
                     }
                 });
+    }
+
+    @Scheduled(cron = "0 0 0/1 * * *") // TODO: REFACTOR
+    public void rollbackRealNumber() {
+        List<User> users = userFacade.findAll()
+                .stream()
+                .filter(user -> user.getImaginary() == Imaginary.IMAGINARY_NUMBER)
+                .collect(Collectors.toList());
+
+
     }
 }
