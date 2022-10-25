@@ -16,8 +16,13 @@ public class ImaginaryNumberApiController {
         imaginaryNumberService.reportUser(userId);
     }
 
-    @PutMapping("/update/test")
+    @PutMapping("/update/test") // test
     public void updateTest() {
         imaginaryNumberService.updateImaginaryNumberUser();
+    }
+
+    @DeleteMapping("/delete/test") // test
+    public void deleteTest() {
+        imaginaryNumberService.removeOldReport();
     }
 }

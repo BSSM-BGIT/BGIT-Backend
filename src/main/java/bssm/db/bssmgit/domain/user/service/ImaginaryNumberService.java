@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -38,7 +40,7 @@ public class ImaginaryNumberService {
         imaginaryNumberFacade.save(imaginaryNumberRequestDto.toImaginaryNumber());
     }
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */1 * * * *") // TODO: REFACTOR
     public void updateImaginaryNumberUser() {
         ArrayList<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
@@ -59,5 +61,16 @@ public class ImaginaryNumberService {
         }
 
         userFacade.saveAll(users);
+    }
+
+    @Scheduled(cron = "0 */1 * * * *") // TODO: REFACTOR
+    public void removeOldReport() {
+        imaginaryNumberFacade.findAll()
+                .forEach(imaginaryNumber -> {
+                    long between = ChronoUnit.WEEKS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
+                    if (between > 2) {
+                        imaginaryNumberFacade.remove(imaginaryNumber);
+                    }
+                });
     }
 }

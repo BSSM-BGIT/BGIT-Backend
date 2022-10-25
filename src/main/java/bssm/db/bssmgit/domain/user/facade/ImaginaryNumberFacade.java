@@ -21,6 +21,9 @@ public class ImaginaryNumberFacade {
         return imaginaryNumberRepository.findAll();
     }
 
+    public void remove(ImaginaryNumber imaginaryNumber) {
+        imaginaryNumberRepository.delete(imaginaryNumber);
+    }
     public void removeAll() {
         imaginaryNumberRepository.deleteAll();
     }
