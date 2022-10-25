@@ -84,6 +84,7 @@ public class UserFacade {
 
     public User getAndUpdateOrElseSignUp(BsmResourceResponse resource, String token) {
         Optional<User> userOptional = findByEmail(resource.getEmail());
+
         if (userOptional.isEmpty()) {
             if (resource.getRole() == STUDENT) {
                 return bsmSignup(resource, token);
@@ -92,14 +93,10 @@ public class UserFacade {
             }
         }
         User user = userOptional.get();
-        System.out.println("user.getRole() = " + user.getRole());
-        System.out.println("user.getRole() = " + user.getRole());
-        System.out.println("user.getRole() = " + user.getRole());
-        System.out.println("user.getRole() = " + user.getRole());
-        System.out.println("user.getRole() = " + user.getRole());
-        System.out.println("user.getRole() = " + user.getRole());
 
-        return bsmUserUpdate(user, resource);
+        if (resource.getRole() == STUDENT) {
+            return bsmUserUpdate(user, resource);
+        } else return null;
     }
 
     private Optional<User> findByEmail(String email) {
