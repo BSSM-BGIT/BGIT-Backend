@@ -73,11 +73,23 @@ public class ImaginaryNumberService {
 
     @Scheduled(cron = "0 0 0/1 * * *") // TODO: REFACTOR
     public void rollbackRealNumber() {
-        List<User> users = userFacade.findAll()
-                .stream()
-                .filter(user -> user.getImaginary() == Imaginary.IMAGINARY_NUMBER)
-                .collect(Collectors.toList());
+        ArrayList<Long> userIds = new ArrayList<>();
+        imaginaryNumberFacade.findAll()
+                .forEach(imaginaryNumber -> userIds.add(imaginaryNumber.getReportedUserId()));
 
+        ArrayList<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            long total = userIds.stream()
+                    .filter(id -> Objects.equals(id, userId))
+                    .count();
+            if (total < 3) {
+                User user = userFacade.findById(userId);
+                if (user.getImaginary() == Imaginary.IMAGINARY_NUMBER) {
+                    user.initImaginary();
+                }
+            }
+        }
 
+        userFacade.saveAll(users);
     }
 }
