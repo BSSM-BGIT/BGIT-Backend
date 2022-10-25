@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 public class UserResponseDto {
 
-    private final Long userId;
-    private final String email;
-    private final int studentGrade;
-    private final int studentClassNo;
-    private final int studentNo;
+    private Long userId;
+    private String email;
+    private int studentGrade;
+    private int studentClassNo;
+    private int studentNo;
     private final String name;
     private final String school;
     private final boolean githubAuth;
@@ -19,11 +19,13 @@ public class UserResponseDto {
     private boolean isImaginaryNumber;
 
     public UserResponseDto(User user) {
-        this.userId = user.getId();
-        this.email = user.getEmail();
-        this.studentGrade = user.getStudentGrade();
-        this.studentClassNo = user.getStudentClassNo();
-        this.studentNo = user.getStudentNo();
+        if (user.getStudentNo() != null) {
+            this.userId = user.getId();
+            this.email = user.getEmail();
+            this.studentGrade = user.getStudentGrade();
+            this.studentClassNo = user.getStudentClassNo();
+            this.studentNo = user.getStudentNo();
+        }
         this.name = user.getName();
         this.school = user.getRole().name();
         this.githubAuth = user.getGithubId() != null;
