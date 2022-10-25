@@ -25,4 +25,9 @@ public class ImaginaryNumberApiController {
     public void deleteTest() {
         imaginaryNumberService.removeOldReport();
     }
+
+    @PutMapping("/rollback/test")
+    public void rollBackTest() {
+        imaginaryNumberService.rollbackRealNumber();
+    }
 }

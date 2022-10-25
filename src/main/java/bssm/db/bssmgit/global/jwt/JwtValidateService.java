@@ -14,11 +14,12 @@ public class JwtValidateService {
     private final RedisService redisService;
 
     public String getEmail(String token) {
-        return jwtProvider.extractAllClaims(token).get("email", String.class);
+        return jwtProvider.extractAllClaims(token)
+                .get("email", String.class);
     }
 
     public void validateRefreshToken(String token) {
-        if (redisService.getData(getEmail(token)) == null) {
+        if (!redisService.getData(getEmail(token)).equals(token)) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
