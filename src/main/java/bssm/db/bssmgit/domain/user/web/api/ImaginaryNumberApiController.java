@@ -11,4 +11,9 @@ public class ImaginaryNumberApiController {
 
     private final ImaginaryNumberService imaginaryNumberService;
 
+    @PostMapping("/{userId}")
+    public void report(@PathVariable Long userId) {
+        imaginaryNumberService.reportUser(userId);
+    }
+
 }

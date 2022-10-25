@@ -1,6 +1,7 @@
 package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.post.entity.BaseTimeEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,9 @@ public class ImaginaryNumber extends BaseTimeEntity {
     @JoinColumn(name = "do_report_user_id")
     private User user;
 
+    @Builder
+    public ImaginaryNumber(Long reportedUserId, User user) {
+        this.reportedUserId = reportedUserId;
+        this.user = user;
+    }
 }
