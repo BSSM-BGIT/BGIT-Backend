@@ -4,8 +4,6 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.response.*;
 import bssm.db.bssmgit.global.exception.CustomException;
-import bssm.db.bssmgit.global.exception.ErrorCode;
-import bssm.db.bssmgit.global.util.Constants;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +65,7 @@ public class BojService {
         String key = createKey();
         user.updateBojAuthId(bojId);
         user.updateRandomCode(key);
+        userFacade.save(user);
 
         return new RandomCodeResponseDto(key);
     }
