@@ -2,13 +2,11 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.request.ImaginaryNumberRequestDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
-import bssm.db.bssmgit.global.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER;
 import static bssm.db.bssmgit.global.util.Constants.every50minutes;
@@ -54,7 +53,7 @@ public class ImaginaryNumberService {
             long count = userIds.stream()
                     .filter(id -> Objects.equals(id, userId))
                     .count();
-            if (count > 2) {
+            if (count > 4) {
                 User user = userFacade.findById(userId);
                 user.updateImaginary();
             }
@@ -67,8 +66,8 @@ public class ImaginaryNumberService {
     public void removeOldReport() {
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> {
-                    long between = ChronoUnit.WEEKS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
-                    if (between > 1) {
+                    long between = ChronoUnit.DAYS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
+                    if (between > 3) {
                         imaginaryNumberFacade.remove(imaginaryNumber);
                     }
                 });
@@ -95,5 +94,27 @@ public class ImaginaryNumberService {
         }
 
         userFacade.saveAll(users);
+        dontHaveImaginaryNumber();
+    }
+
+    private void dontHaveImaginaryNumber() {
+        List<User> users = userFacade.findAll()
+                .stream()
+                .filter(user -> user.getImaginary() == IMAGINARY_NUMBER)
+                .collect(Collectors.toList());
+
+        List<User> userList = new ArrayList<>();
+        for (User user : users) {
+            boolean isExistsUser = imaginaryNumberFacade.findAll()
+                    .stream()
+                    .anyMatch(imaginaryNumber -> imaginaryNumber.getReportedUserId() == user.getId());
+
+            if (!isExistsUser) {
+                user.initImaginary();
+                userList.add(user);
+            }
+        }
+
+        userFacade.saveAll(userList);
     }
 }
