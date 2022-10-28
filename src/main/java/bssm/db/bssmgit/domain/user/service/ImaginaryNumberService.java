@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER;
-import static bssm.db.bssmgit.global.util.Constants.every50minutes;
+import static bssm.db.bssmgit.global.util.Constants.EVERY_50MINUTES;
 
 @RequiredArgsConstructor
 @Service
@@ -42,7 +42,7 @@ public class ImaginaryNumberService {
         imaginaryNumberFacade.save(imaginaryNumberRequestDto.toImaginaryNumber());
     }
 
-    @Scheduled(cron = every50minutes) // TODO: REFACTOR
+    @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void updateImaginaryNumberUser() {
         ArrayList<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
@@ -62,7 +62,7 @@ public class ImaginaryNumberService {
         userFacade.saveAll(users);
     }
 
-    @Scheduled(cron = every50minutes) // TODO: REFACTOR
+    @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void removeOldReport() {
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> {
@@ -74,7 +74,7 @@ public class ImaginaryNumberService {
     }
 
     // TODO: 만약 신고가 다 사라져서 조회할 수 있는 userId가 없는 상태일 때
-    @Scheduled(cron = every50minutes) // TODO: REFACTOR
+    @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void rollbackRealNumber() {
         ArrayList<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
@@ -98,16 +98,13 @@ public class ImaginaryNumberService {
     }
 
     private void dontHaveImaginaryNumber() {
-        List<User> users = userFacade.findAll()
-                .stream()
-                .filter(user -> user.getImaginary() == IMAGINARY_NUMBER)
-                .collect(Collectors.toList());
+        List<User> users = userFacade.findUserByImaginaryUser();
 
         List<User> userList = new ArrayList<>();
         for (User user : users) {
             boolean isExistsUser = imaginaryNumberFacade.findAll()
                     .stream()
-                    .anyMatch(imaginaryNumber -> imaginaryNumber.getReportedUserId() == user.getId());
+                    .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getReportedUserId(), user.getId()));
 
             if (!isExistsUser) {
                 user.initImaginary();

@@ -13,7 +13,6 @@ import leehj050211.bsmOauth.dto.response.BsmResourceResponse;
 import leehj050211.bsmOauth.exceptions.BsmAuthCodeNotFoundException;
 import leehj050211.bsmOauth.exceptions.BsmAuthInvalidClientException;
 import leehj050211.bsmOauth.exceptions.BsmAuthTokenNotFoundException;
-import leehj050211.bsmOauth.type.BsmAuthUserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

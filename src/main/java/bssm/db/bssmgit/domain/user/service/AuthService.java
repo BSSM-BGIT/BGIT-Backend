@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
+import static bssm.db.bssmgit.global.util.Constants.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -146,7 +147,7 @@ public class AuthService {
             String commits = null;
             boolean b = false;
 
-            URL url = new URL("https://github.com/" + githubId);
+            URL url = new URL(GITHUB_URL + githubId);
             URLConnection uc = url.openConnection();
             BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 
@@ -156,7 +157,7 @@ public class AuthService {
                     commits = inputLine;
                     break;
                 }
-                if (inputLine.contains("<h2 class=\"f4 text-normal mb-2\">")) {
+                if (inputLine.contains(REGEX_FOR_COMMIT)) {
                     b = true;
                 }
             }

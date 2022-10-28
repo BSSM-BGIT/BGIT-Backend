@@ -21,7 +21,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import static bssm.db.bssmgit.global.exception.ErrorCode.GIT_CONNECTION_REFUSED;
-import static bssm.db.bssmgit.global.util.Constants.every5minutes;
+import static bssm.db.bssmgit.global.util.Constants.EVERY_5MINUTES;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -40,7 +40,7 @@ public class GithubService {
         github.checkApiUrlValidity();
     }
 
-    @Scheduled(cron = every5minutes)
+    @Scheduled(cron = EVERY_5MINUTES)
     public void updateUser() {
 
         try {
@@ -58,7 +58,7 @@ public class GithubService {
                         String commits = null;
                         boolean b = false;
 
-                        URL url = new URL(Constants.githubUrl + u.getGithubId());
+                        URL url = new URL(Constants.GITHUB_URL + u.getGithubId());
                         URLConnection uc = url.openConnection();
                         BufferedReader br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 
@@ -68,7 +68,7 @@ public class GithubService {
                                 commits = inputLine;
                                 break;
                             }
-                            if (inputLine.contains(Constants.regexForCommit)) {
+                            if (inputLine.contains(Constants.REGEX_FOR_COMMIT)) {
                                 b = true;
                             }
                         }

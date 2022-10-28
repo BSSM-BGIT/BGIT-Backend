@@ -11,4 +11,5 @@ public interface ImaginaryNumberRepository extends JpaRepository<ImaginaryNumber
 
     @Query("select i from ImaginaryNumber i where i.reportedUserId = :userId")
     List<ImaginaryNumber> findByReportedUserId(@Param("userId") Long userId);
+
 }

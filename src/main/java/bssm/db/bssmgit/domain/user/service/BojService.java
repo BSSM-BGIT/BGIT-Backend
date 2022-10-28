@@ -4,6 +4,7 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.response.*;
 import bssm.db.bssmgit.global.exception.CustomException;
+import bssm.db.bssmgit.global.util.Constants;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static bssm.db.bssmgit.global.exception.ErrorCode.USER_NOT_FOUND;
-import static bssm.db.bssmgit.global.util.Constants.every5minutes;
+import static bssm.db.bssmgit.global.util.Constants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,14 +25,13 @@ import static bssm.db.bssmgit.global.util.Constants.every5minutes;
 public class BojService {
 
     private final UserFacade userFacade;
-    private final static String URL = "https://solved.ac/api/v3/user/show?handle=";
     private final OkHttpClient okHttpClient;
 
     @Transactional
     public BojAuthenticationResultResDto matchedCode() throws IOException {
         User user = userFacade.getCurrentUser();
         Request tokenRequest = new Request.Builder()
-                .url(URL + user.getBojAuthId())
+                .url(Constants.BOJ_URL + user.getBojAuthId())
                 .build();
         Response bojResponse = okHttpClient.newCall(tokenRequest).execute();
         if (bojResponse.code() == 404) {
@@ -54,6 +54,7 @@ public class BojService {
                     info.getProfileImageUrl(),
                     info.getBio()
             );
+            userFacade.save(user);
         }
 
         return new BojAuthenticationResultResDto(user);
@@ -93,15 +94,15 @@ public class BojService {
         return key.toString();
     }
 
-    @Scheduled(cron = every5minutes) // 매일 새벽 4시
-    public void updateUserBojInfo() throws IOException {
+    @Scheduled(cron = EVERY_5MINUTES) // 매일 새벽 4시
+    public void updateUserBojInfo() {
         ArrayList<User> users = new ArrayList<>();
 
         userFacade.findAll().stream().filter(u -> u.getBojId() != null)
                 .forEach(u -> {
                             // Request
                             Request tokenRequest = new Request.Builder()
-                                    .url(URL + u.getBojAuthId())
+                                    .url(BOJ_URL + u.getBojAuthId())
                                     .build();
                             Response bojResponse = null;
                             try {

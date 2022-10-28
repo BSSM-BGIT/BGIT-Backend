@@ -133,7 +133,7 @@ public class UserFacade {
         return userRepository.findAll();
     }
 
-    public List<User> findUserImaginaryUser() {
+    public List<User> findUserByImaginaryUser() {
         return userRepository.findByUserImaginaryUser();
     }
 }
