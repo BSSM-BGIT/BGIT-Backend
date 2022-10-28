@@ -2,8 +2,10 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
+import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
+import bssm.db.bssmgit.domain.user.service.validate.ImaginaryNumberVerifier;
 import bssm.db.bssmgit.domain.user.web.dto.request.ImaginaryNumberRequestDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
@@ -31,12 +33,7 @@ public class ImaginaryNumberService {
     public void reportUser(Long userId) {
         User user = userFacade.getCurrentUser();
         List<ImaginaryNumber> imaginaryNumbers = imaginaryNumberFacade.findByReportedUserId(userId);
-        boolean isAlreadyReportedUserExists = imaginaryNumbers.stream()
-                .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getUser().getId(), user.getId()));
-
-        if (isAlreadyReportedUserExists) {
-            throw new CustomException(ErrorCode.DONT_REPORT_USER);
-        }
+        ImaginaryNumberVerifier.isAlreadyExistsReportedUser(user, imaginaryNumbers);
 
         ImaginaryNumberRequestDto imaginaryNumberRequestDto = new ImaginaryNumberRequestDto(userId, user);
         imaginaryNumberFacade.save(imaginaryNumberRequestDto.toImaginaryNumber());
@@ -63,17 +60,21 @@ public class ImaginaryNumberService {
     }
 
     @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
-    public void removeOldReport() {
+    private void removeOldReport() {
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> {
-                    long between = ChronoUnit.DAYS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
-                    if (between > 3) {
+                    if (isAfter3Days(imaginaryNumber)) {
                         imaginaryNumberFacade.remove(imaginaryNumber);
                     }
                 });
     }
 
-    // TODO: 만약 신고가 다 사라져서 조회할 수 있는 userId가 없는 상태일 때
+    // 3일이 지난 신고 기록인가
+    private boolean isAfter3Days(ImaginaryNumber imaginaryNumber) {
+        long between = ChronoUnit.DAYS.between(imaginaryNumber.getCreatedAt(), LocalDateTime.now());
+        return between > 3;
+    }
+
     @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void rollbackRealNumber() {
         ArrayList<Long> userIds = new ArrayList<>();
@@ -99,19 +100,20 @@ public class ImaginaryNumberService {
 
     private void dontHaveImaginaryNumber() {
         List<User> users = userFacade.findUserByImaginaryUser();
-
         List<User> userList = new ArrayList<>();
         for (User user : users) {
-            boolean isExistsUser = imaginaryNumberFacade.findAll()
-                    .stream()
-                    .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getReportedUserId(), user.getId()));
-
-            if (!isExistsUser) {
+            if (!notExistsRecordReportButAdaptImaginaryNumberUser(user)) {
                 user.initImaginary();
                 userList.add(user);
             }
         }
-
         userFacade.saveAll(userList);
+    }
+
+    // 허수 테이블에 신고받은 기록은 없지만(신고 적용 기간이 지나서 다 사라진 경우) 유저 테이블에서는 허수로 적용되어있는가
+    private boolean notExistsRecordReportButAdaptImaginaryNumberUser(User user) {
+        return imaginaryNumberFacade.findAll()
+                .stream()
+                .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getReportedUserId(), user.getId()));
     }
 }
