@@ -10,6 +10,7 @@ import java.util.Objects;
 
 public class ImaginaryNumberVerifier {
 
+    // 이미 신고한 유저인가
     public static void isAlreadyExistsReportedUser(User user, List<ImaginaryNumber> imaginaryNumbers) {
         boolean isAlreadyExistsReportedUser = imaginaryNumbers.stream()
                 .anyMatch(imaginaryNumber -> Objects.equals(imaginaryNumber.getUser().getId(), user.getId()));

@@ -77,16 +77,13 @@ public class ImaginaryNumberService {
 
     @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void rollbackRealNumber() {
-        ArrayList<Long> userIds = new ArrayList<>();
+        List<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> userIds.add(imaginaryNumber.getReportedUserId()));
 
-        ArrayList<User> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
-            long total = userIds.stream()
-                    .filter(id -> Objects.equals(id, userId))
-                    .count();
-            if (total < 3) {
+            if (reportsLessThan5(userIds, userId)) {
                 User user = userFacade.findById(userId);
                 if (user.getImaginary() == IMAGINARY_NUMBER) {
                     user.initImaginary();
@@ -96,6 +93,13 @@ public class ImaginaryNumberService {
 
         userFacade.saveAll(users);
         dontHaveImaginaryNumber();
+    }
+
+    private boolean reportsLessThan5(List<Long> userIds, Long userId) {
+        long total = userIds.stream()
+                .filter(id -> Objects.equals(id, userId))
+                .count();
+        return total < 5;
     }
 
     private void dontHaveImaginaryNumber() {
