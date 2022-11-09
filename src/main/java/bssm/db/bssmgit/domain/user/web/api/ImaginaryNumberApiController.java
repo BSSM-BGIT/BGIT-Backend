@@ -16,18 +16,4 @@ public class ImaginaryNumberApiController {
         imaginaryNumberService.reportUser(userId);
     }
 
-    @PutMapping("/update/test") // test
-    public void updateTest() {
-        imaginaryNumberService.updateImaginaryNumberUser();
-    }
-
-    @DeleteMapping("/delete/test") // test
-    public void deleteTest() {
-        imaginaryNumberService.removeOldReport();
-    }
-
-    @PutMapping("/rollback/test")
-    public void rollBackTest() {
-        imaginaryNumberService.rollbackRealNumber();
-    }
 }

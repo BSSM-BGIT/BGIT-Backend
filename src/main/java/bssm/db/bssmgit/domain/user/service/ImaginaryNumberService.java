@@ -18,7 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER;
 import static bssm.db.bssmgit.global.util.Constants.EVERY_50MINUTES;
@@ -76,7 +75,7 @@ public class ImaginaryNumberService {
     }
 
     @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
-    public void rollbackRealNumber() {
+    public void rollbackImaginaryNumberToRealNumber() {
         initImaginaryReportsLessThan5();
         dontHaveImaginaryNumber();
     }
