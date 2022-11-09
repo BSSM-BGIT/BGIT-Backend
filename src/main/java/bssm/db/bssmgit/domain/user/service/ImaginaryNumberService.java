@@ -77,10 +77,17 @@ public class ImaginaryNumberService {
 
     @Scheduled(cron = EVERY_50MINUTES) // TODO: REFACTOR
     public void rollbackRealNumber() {
+        initImaginaryReportsLessThan5();
+        dontHaveImaginaryNumber();
+    }
+
+    private void initImaginaryReportsLessThan5() {
+        // 신고 당한 유저들의 id 저장
         List<Long> userIds = new ArrayList<>();
         imaginaryNumberFacade.findAll()
                 .forEach(imaginaryNumber -> userIds.add(imaginaryNumber.getReportedUserId()));
 
+        // 신고 횟수가 5 미만인 유저들 초기화 후 저장
         List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
             if (reportsLessThan5(userIds, userId)) {
@@ -90,9 +97,7 @@ public class ImaginaryNumberService {
                 }
             }
         }
-
         userFacade.saveAll(users);
-        dontHaveImaginaryNumber();
     }
 
     private boolean reportsLessThan5(List<Long> userIds, Long userId) {
