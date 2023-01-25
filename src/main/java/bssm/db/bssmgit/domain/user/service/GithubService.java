@@ -3,7 +3,6 @@ package bssm.db.bssmgit.domain.user.service;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.global.exception.CustomException;
-import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

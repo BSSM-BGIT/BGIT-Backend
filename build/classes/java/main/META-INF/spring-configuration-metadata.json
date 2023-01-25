@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "spring.security.oauth2.user.github",
+      "type": "bssm.db.bssmgit.domain.user.service.AuthProperties",
+      "sourceType": "bssm.db.bssmgit.domain.user.service.AuthProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.security.oauth2.user.github.client-id",
+      "type": "java.lang.String",
+      "sourceType": "bssm.db.bssmgit.domain.user.service.AuthProperties"
+    },
+    {
+      "name": "spring.security.oauth2.user.github.client-secret",
+      "type": "java.lang.String",
+      "sourceType": "bssm.db.bssmgit.domain.user.service.AuthProperties"
+    },
+    {
+      "name": "spring.security.oauth2.user.github.redirect-url",
+      "type": "java.lang.String",
+      "sourceType": "bssm.db.bssmgit.domain.user.service.AuthProperties"
+    }
+  ],
+  "hints": []
+}
