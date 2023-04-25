@@ -7,6 +7,7 @@ import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,4 +46,8 @@ public class UserApiController {
         githubService.updateUserGithubInfo();
     }
 
+    @DeleteMapping("/test")
+    public void deleteTest() throws IOException {
+        githubService.deleteNotFoundGithubIdUser();
+    }
 }

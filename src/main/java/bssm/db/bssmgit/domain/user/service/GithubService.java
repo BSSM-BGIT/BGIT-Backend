@@ -11,14 +11,17 @@ import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.util.List;
 
 import static bssm.db.bssmgit.global.exception.ErrorCode.GIT_CONNECTION_REFUSED;
+import static bssm.db.bssmgit.global.util.Constants.EVERY_10MINUTES;
 import static bssm.db.bssmgit.global.util.Constants.EVERY_5MINUTES;
 import static bssm.db.bssmgit.global.util.Constants.REGEX_FOR_COMMIT;
 
@@ -39,7 +42,8 @@ public class GithubService {
         github.checkApiUrlValidity();
     }
 
-    @Scheduled(cron = EVERY_5MINUTES)
+    @Scheduled(cron = EVERY_10MINUTES)
+    @Transactional
     public void updateUserGithubInfo() throws IOException {
         connectGithub();
         List<User> users = userRepository.findAll();
@@ -47,7 +51,7 @@ public class GithubService {
         for (int i = 0, userSize = users.size(); i < userSize; i++) {
             User user = users.get(i);
             if (user.hasNotGithubId()) {
-                return;
+                continue;
             }
             Integer commit = getCommit(user.getGithubId());
             String bio = github.getUser(user.getGithubId()).getBio();
@@ -65,6 +69,22 @@ public class GithubService {
 
         String commitSymbol = getCommitSymbol(br).replaceAll(",", "");
         return Integer.parseInt(commitSymbol);
+    }
+
+    @Scheduled(cron = EVERY_5MINUTES)
+    @Transactional
+    public void deleteNotFoundGithubIdUser() throws IOException {
+        List<User> users = userRepository.findAll();
+        for (int i = 0, userSize = users.size(); i < userSize; i++) {
+            User user = users.get(i);
+            try {
+                URLConnection connection = GithubUtil.getGithubUrlConnection(user.getGithubId());
+                connection.getInputStream();
+            } catch (FileNotFoundException e) {
+                log.info("{}를 찾을 수 없음 -> 해당 유저 깃허브 아이디 자동 삭제 처리", e.getMessage());
+                userRepository.deleteByGithubId(user.getGithubId());
+            }
+        }
     }
 
     private static String getCommitSymbol(BufferedReader br) throws IOException {

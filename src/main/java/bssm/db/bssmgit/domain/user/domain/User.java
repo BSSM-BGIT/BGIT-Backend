@@ -73,7 +73,7 @@ public class User {
     @Column(length = 8)
     private Integer commits;
 
-    @Column(length = 128)
+    @Column(length = 1024)
     private String githubMsg;
 
     @Column

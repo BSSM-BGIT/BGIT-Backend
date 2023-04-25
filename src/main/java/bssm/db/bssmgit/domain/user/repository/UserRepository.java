@@ -30,4 +30,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "bssm.db.bssmgit.domain.user.domain.type.Imaginary.IMAGINARY_NUMBER")
     List<User> findByUserImaginaryUser();
 
+    void deleteByGithubId(String githubId);
+
 }
