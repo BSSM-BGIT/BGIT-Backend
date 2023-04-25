@@ -5,7 +5,6 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

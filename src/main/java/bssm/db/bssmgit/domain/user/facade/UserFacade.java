@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static leehj050211.bsmOauth.type.BsmAuthUserRole.*;
+import static leehj050211.bsmOauth.type.BsmAuthUserRole.STUDENT;
+import static leehj050211.bsmOauth.type.BsmAuthUserRole.TEACHER;
 
 @Component
 @RequiredArgsConstructor

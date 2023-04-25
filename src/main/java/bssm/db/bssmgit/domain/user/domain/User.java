@@ -4,14 +4,23 @@ import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 
 @Getter
@@ -172,6 +181,10 @@ public class User {
 
     public void reductionVotingCount() {
         this.votingCount--;
+    }
+
+    public boolean hasNotGithubId() {
+        return this.githubId == null;
     }
 
 }

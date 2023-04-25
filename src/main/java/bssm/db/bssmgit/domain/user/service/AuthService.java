@@ -4,16 +4,16 @@ import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
 import bssm.db.bssmgit.domain.user.web.dto.request.OauthAttributes;
+import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.JwtResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.OauthTokenResponse;
-import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.global.config.redis.RedisService;
-import bssm.db.bssmgit.global.util.CookieProvider;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.exception.ErrorCode;
 import bssm.db.bssmgit.global.jwt.JwtProvider;
 import bssm.db.bssmgit.global.jwt.JwtValidateService;
+import bssm.db.bssmgit.global.util.CookieProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GitHub;
@@ -37,7 +37,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import static bssm.db.bssmgit.global.jwt.JwtProperties.REFRESH_TOKEN_VALID_TIME;
-import static bssm.db.bssmgit.global.util.Constants.*;
+import static bssm.db.bssmgit.global.util.Constants.GITHUB_URL;
+import static bssm.db.bssmgit.global.util.Constants.REGEX_FOR_COMMIT;
 
 @RequiredArgsConstructor
 @Slf4j

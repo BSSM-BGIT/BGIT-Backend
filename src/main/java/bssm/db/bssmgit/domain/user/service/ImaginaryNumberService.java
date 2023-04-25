@@ -2,13 +2,10 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.service.validate.ImaginaryNumberVerifier;
 import bssm.db.bssmgit.domain.user.web.dto.request.ImaginaryNumberRequestDto;
-import bssm.db.bssmgit.global.exception.CustomException;
-import bssm.db.bssmgit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

@@ -3,14 +3,18 @@ package bssm.db.bssmgit.domain.user.web.api;
 import bssm.db.bssmgit.domain.user.service.AuthService;
 import bssm.db.bssmgit.domain.user.service.BojService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController

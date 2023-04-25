@@ -2,22 +2,28 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
-import bssm.db.bssmgit.domain.user.web.dto.response.*;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.BojJsonResponseDto;
+import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
 import bssm.db.bssmgit.global.exception.CustomException;
 import bssm.db.bssmgit.global.util.Constants;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 import static bssm.db.bssmgit.global.exception.ErrorCode.USER_NOT_FOUND;
-import static bssm.db.bssmgit.global.util.Constants.*;
+import static bssm.db.bssmgit.global.util.Constants.BOJ_URL;
+import static bssm.db.bssmgit.global.util.Constants.EVERY_5MINUTES;
 
 @Slf4j
 @RequiredArgsConstructor
