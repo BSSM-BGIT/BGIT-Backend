@@ -2,7 +2,6 @@ package bssm.db.bssmgit.domain.user.domain;
 
 import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,54 +66,6 @@ public class User {
     @Column(length = 32)
     private String bsmToken;
 
-    @Column(length = 64)
-    private String githubId;
-
-    @Column(length = 8)
-    private Integer commits;
-
-    @Column(length = 1024)
-    private String githubMsg;
-
-    @Column
-    private String githubImg;
-
-    @Column
-    private String bojId;
-    // solvedCount - 사용자가 푼 문제 수
-    @Column(length = 8)
-    private Integer solvedCount;
-
-    @Column(length = 64)
-    private Integer rating;
-
-    // tier - Bronze V를 1, Bronze IV를 2, ...,
-    // Ruby I을 30, Master를 31로 표현하는 사용자 티어
-    @Column(length = 4)
-    private Integer tier;
-
-    // maxStreak - 최대 연속 문제 풀이일 수
-    @Column(length = 8)
-    private Integer maxStreak;
-
-    @Column
-    private String bojAuthId;
-
-    @Column
-    private String bojImg;
-
-    @Column
-    private String bojBio;
-
-    @Column
-    private String randomCode;
-
-    @Enumerated(EnumType.STRING)
-    private Imaginary imaginary;
-
-    @Column
-    private Integer votingCount;
-
     public void updateStudentGrade(Integer studentGrade) {
         this.studentGrade = studentGrade;
     }
@@ -131,46 +82,6 @@ public class User {
         this.name = name;
     }
 
-    public void updateGitId(String githubId) {
-        this.githubId = githubId;
-    }
-
-    public void updateGitInfo(int commits, String bio, String githubImg) {
-        this.commits = commits;
-        this.githubMsg = bio;
-        this.githubImg = githubImg;
-    }
-
-    public void updateBojAuthId(String bojAuthId) {
-        this.bojAuthId = bojAuthId;
-    }
-
-    public void updateRandomCode(String randomCode) {
-        this.randomCode = randomCode;
-    }
-
-    public void updateUserBojInfo(String bojId, Integer solvedCount, Integer tier, Integer rating, Integer maxStreak, String bojImg, String bio) {
-        this.bojId = bojId;
-        this.solvedCount = solvedCount;
-        this.tier = tier;
-        this.rating = Math.toIntExact(rating);
-        this.maxStreak = maxStreak;
-        this.bojImg = bojImg;
-        this.bojBio = bio;
-    }
-
-    public void initImaginary() {
-        this.imaginary = Imaginary.REAL_NUMBER;
-    }
-
-    public void initVotingCount() {
-        this.votingCount = 3;
-    }
-
-    public void updateImaginary() {
-        this.imaginary = Imaginary.IMAGINARY_NUMBER;
-    }
-
     public void addPostCategories(Category category) {
         this.categories.add(category);
     }
@@ -178,13 +89,4 @@ public class User {
     public void addPosts(Post post) {
         this.posts.add(post);
     }
-
-    public void reductionVotingCount() {
-        this.votingCount--;
-    }
-
-    public boolean hasNotGithubId() {
-        return this.githubId == null;
-    }
-
 }
