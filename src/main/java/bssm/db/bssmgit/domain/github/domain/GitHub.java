@@ -1,14 +1,14 @@
 package bssm.db.bssmgit.domain.github.domain;
 
 import bssm.db.bssmgit.domain.github.domain.type.Imaginary;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GitHub {
 
