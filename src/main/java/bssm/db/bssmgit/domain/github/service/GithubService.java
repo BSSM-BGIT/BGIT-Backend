@@ -2,9 +2,7 @@ package bssm.db.bssmgit.domain.github.service;
 
 import bssm.db.bssmgit.domain.github.domain.GitHub;
 import bssm.db.bssmgit.domain.github.domain.repository.GitHubRepository;
-import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.repository.UserRepository;
-import bssm.db.bssmgit.domain.user.util.GithubUtil;
+import bssm.db.bssmgit.domain.github.util.GithubUtil;
 import bssm.db.bssmgit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

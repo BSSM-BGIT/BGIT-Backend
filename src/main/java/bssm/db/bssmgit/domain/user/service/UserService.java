@@ -2,8 +2,8 @@ package bssm.db.bssmgit.domain.user.service;
 
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
+import bssm.db.bssmgit.domain.boj.web.dto.response.BojResponseDto;
+import bssm.db.bssmgit.domain.github.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.annotation.ServiceWithTransactionalReadOnly;
 import bssm.db.bssmgit.global.exception.CustomException;

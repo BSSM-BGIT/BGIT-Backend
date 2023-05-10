@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.domain.user.web.dto.response;
+package bssm.db.bssmgit.domain.boj.web.dto.response;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.domain.user.web.dto.response;
+package bssm.db.bssmgit.domain.boj.web.dto.response;
 
 import bssm.db.bssmgit.domain.boj.domain.Boj;
 import bssm.db.bssmgit.domain.user.domain.User;

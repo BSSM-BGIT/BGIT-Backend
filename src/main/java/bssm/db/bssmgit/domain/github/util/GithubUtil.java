@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.domain.user.util;
+package bssm.db.bssmgit.domain.github.util;
 
 import bssm.db.bssmgit.global.util.Constants;
 

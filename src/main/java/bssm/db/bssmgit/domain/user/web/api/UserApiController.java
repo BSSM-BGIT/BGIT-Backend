@@ -2,8 +2,8 @@ package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.github.service.GithubService;
 import bssm.db.bssmgit.domain.user.service.UserService;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;
+import bssm.db.bssmgit.domain.boj.web.dto.response.BojResponseDto;
+import bssm.db.bssmgit.domain.github.web.dto.response.GithubResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import bssm.db.bssmgit.global.generic.Result;
 import lombok.RequiredArgsConstructor;

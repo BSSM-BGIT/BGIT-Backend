@@ -2,10 +2,10 @@ package bssm.db.bssmgit.domain.user.web.api;
 
 import bssm.db.bssmgit.domain.github.service.AuthService;
 import bssm.db.bssmgit.domain.boj.service.BojService;
-import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
+import bssm.db.bssmgit.domain.boj.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;
-import bssm.db.bssmgit.domain.user.web.dto.response.RandomCodeResponseDto;
+import bssm.db.bssmgit.domain.github.web.dto.response.GitLoginResponseDto;
+import bssm.db.bssmgit.domain.boj.web.dto.response.RandomCodeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

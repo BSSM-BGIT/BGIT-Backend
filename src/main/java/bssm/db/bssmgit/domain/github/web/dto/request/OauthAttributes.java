@@ -1,4 +1,4 @@
-package bssm.db.bssmgit.domain.user.web.dto.request;
+package bssm.db.bssmgit.domain.github.web.dto.request;
 
 import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
 
