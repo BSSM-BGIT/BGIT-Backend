@@ -1,7 +1,7 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
-import bssm.db.bssmgit.domain.user.service.AuthService;
-import bssm.db.bssmgit.domain.user.service.BojService;
+import bssm.db.bssmgit.domain.github.service.AuthService;
+import bssm.db.bssmgit.domain.boj.service.BojService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojAuthenticationResultResDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GitLoginResponseDto;

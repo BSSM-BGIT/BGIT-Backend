@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.dto.response;
 
+import bssm.db.bssmgit.domain.boj.domain.Boj;
 import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ public class BojAuthenticationResultResDto {
 
     private boolean result;
 
-    public BojAuthenticationResultResDto(User user) {
-        if(user.getBojId() != null) result = true;
+    public BojAuthenticationResultResDto(Boj boj) {
+        if(boj.getBojId() != null) result = true;
     }
 }

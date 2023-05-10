@@ -1,5 +1,7 @@
 package bssm.db.bssmgit.domain.user.web.dto.response;
 
+import bssm.db.bssmgit.domain.boj.domain.Boj;
+import bssm.db.bssmgit.domain.github.domain.GitHub;
 import bssm.db.bssmgit.domain.user.domain.User;
 import lombok.Getter;
 
@@ -25,11 +27,14 @@ public class UserResponseDto {
             this.studentClassNo = user.getStudentClassNo();
             this.studentNo = user.getStudentNo();
         }
+
+        GitHub userGithub = user.getGitHub();
+        Boj userBoj = user.getBoj();
         this.name = user.getName();
         this.school = user.getRole().name();
-        this.githubAuth = user.getGithubId() != null;
-        this.bojAuth = user.getBojId() != null;
-        if (user.getImaginary().name().equals("IMAGINARY_NUMBER")) {
+        this.githubAuth = userGithub.getGithubId() != null;
+        this.bojAuth = userBoj.getBojId() != null;
+        if (userGithub.getImaginary().name().equals("IMAGINARY_NUMBER")) {
             this.isImaginaryNumber = true;
         }
     }

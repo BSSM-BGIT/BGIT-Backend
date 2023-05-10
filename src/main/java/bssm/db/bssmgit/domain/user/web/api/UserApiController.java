@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
-import bssm.db.bssmgit.domain.user.service.GithubService;
+import bssm.db.bssmgit.domain.github.service.GithubService;
 import bssm.db.bssmgit.domain.user.service.UserService;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
 import bssm.db.bssmgit.domain.user.web.dto.response.GithubResponseDto;

@@ -1,5 +1,7 @@
 package bssm.db.bssmgit.domain.user.domain;
 
+import bssm.db.bssmgit.domain.boj.domain.Boj;
+import bssm.db.bssmgit.domain.github.domain.GitHub;
 import bssm.db.bssmgit.domain.post.entity.Category;
 import bssm.db.bssmgit.domain.post.entity.Post;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
@@ -8,13 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +61,12 @@ public class User {
 
     @Column(length = 32)
     private String bsmToken;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private GitHub gitHub;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Boj boj;
 
     public void updateStudentGrade(Integer studentGrade) {
         this.studentGrade = studentGrade;

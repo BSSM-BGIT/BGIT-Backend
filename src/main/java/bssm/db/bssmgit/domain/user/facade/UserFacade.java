@@ -1,7 +1,6 @@
 package bssm.db.bssmgit.domain.user.facade;
 
 import bssm.db.bssmgit.domain.user.domain.User;
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
 import bssm.db.bssmgit.domain.user.web.dto.response.BojResponseDto;
@@ -51,7 +50,6 @@ public class UserFacade {
                 .studentNo(student.getStudentNo())
                 .bsmToken(bsmToken)
                 .role(Role.ROLE_BSSM)
-                .imaginary(Imaginary.REAL_NUMBER)
                 .build();
         save(user);
         return user;
@@ -66,7 +64,6 @@ public class UserFacade {
                 .name(teacher.getName())
                 .bsmToken(bsmToken)
                 .role(Role.ROLE_BSSM)
-                .imaginary(Imaginary.REAL_NUMBER)
                 .build();
         save(user);
         return user;

@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.domain.github.domain;
 
-import bssm.db.bssmgit.domain.user.domain.type.Imaginary;
+import bssm.db.bssmgit.domain.github.domain.type.Imaginary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

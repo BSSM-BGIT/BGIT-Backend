@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.domain.user.web.api;
 
-import bssm.db.bssmgit.domain.user.service.ImaginaryNumberService;
+import bssm.db.bssmgit.domain.github.service.ImaginaryNumberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
