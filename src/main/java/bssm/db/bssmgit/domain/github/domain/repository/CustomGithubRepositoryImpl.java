@@ -1,5 +1,7 @@
 package bssm.db.bssmgit.domain.github.domain.repository;
 
+import bssm.db.bssmgit.domain.github.domain.GitHub;
+import bssm.db.bssmgit.domain.github.domain.type.Imaginary;
 import bssm.db.bssmgit.domain.github.web.dto.response.GithubResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +26,16 @@ public class CustomGithubRepositoryImpl implements CustomGithubRepository {
                 .from(gitHub)
                 .innerJoin(user.gitHub)
                 .fetchJoin()
+                .distinct()
+                .orderBy(gitHub.commits.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<GitHub> findGitHubsByImaginary() {
+        return jpaQueryFactory
+                .selectFrom(gitHub)
+                .where(gitHub.imaginary.eq(Imaginary.IMAGINARY_NUMBER))
                 .fetch();
     }
 }

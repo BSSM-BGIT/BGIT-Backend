@@ -1,7 +1,7 @@
 package bssm.db.bssmgit.domain.github.service;
 
 import bssm.db.bssmgit.domain.github.domain.GitHub;
-import bssm.db.bssmgit.domain.github.domain.repository.GitHubRepository;
+import bssm.db.bssmgit.domain.github.domain.repository.CustomGithubRepository;
 import bssm.db.bssmgit.domain.user.domain.ImaginaryNumber;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.ImaginaryNumberFacade;
@@ -25,7 +25,7 @@ import static bssm.db.bssmgit.global.util.Constants.EVERY_50MINUTES;
 @Service
 public class ImaginaryNumberService {
 
-    private final GitHubRepository gitHubRepository;
+    private final CustomGithubRepository customGithubRepository;
     private final UserFacade userFacade;
     private final ImaginaryNumberFacade imaginaryNumberFacade;
 
@@ -107,7 +107,7 @@ public class ImaginaryNumberService {
     }
 
     private void dontHaveImaginaryNumber() {
-        List<GitHub> gitHubs = gitHubRepository.findGitHubsByImaginary();
+        List<GitHub> gitHubs = customGithubRepository.findGitHubsByImaginary();
 
         for (GitHub gitHub : gitHubs) {
             if (!notExistsRecordReportButAdaptImaginaryNumberUser()) {
