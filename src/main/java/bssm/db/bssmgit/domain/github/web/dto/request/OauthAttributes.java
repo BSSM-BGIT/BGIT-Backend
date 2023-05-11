@@ -1,6 +1,6 @@
 package bssm.db.bssmgit.domain.github.web.dto.request;
 
-import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
+import bssm.db.bssmgit.domain.github.web.dto.GitHubIdDto;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -8,9 +8,9 @@ import java.util.Map;
 public enum OauthAttributes {
     GITHUB("github") {
         @Override
-        public UserProfile of(Map<String, Object> attributes) {
-            return UserProfile.builder()
-                    .gitId(String.valueOf(attributes.get("login")))
+        public GitHubIdDto of(Map<String, Object> attributes) {
+            return GitHubIdDto.builder()
+                    .gitHubId(String.valueOf(attributes.get("login")))
                     .build();
         }
     };
@@ -21,7 +21,7 @@ public enum OauthAttributes {
         this.providerName = name;
     }
 
-    public static UserProfile extract(String providerName, Map<String, Object> attributes) {
+    public static GitHubIdDto extract(String providerName, Map<String, Object> attributes) {
         return Arrays.stream(values())
                 .filter(provider -> providerName.equals(provider.providerName))
                 .findFirst()
@@ -29,5 +29,5 @@ public enum OauthAttributes {
                 .of(attributes);
     }
 
-    public abstract UserProfile of(Map<String, Object> attributes);
+    public abstract GitHubIdDto of(Map<String, Object> attributes);
 }

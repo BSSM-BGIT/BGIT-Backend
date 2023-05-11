@@ -29,18 +29,6 @@ public class UserApiController {
         return userService.getUser();
     }
 
-    @GetMapping("/git")
-    public Result<List<GithubResponseDto>> findByGithubCommitDesc() {
-        List<GithubResponseDto> allUserBojDesc = userService.findAllUserGitDesc();
-        return new Result<>(allUserBojDesc.size(), allUserBojDesc);
-    }
-
-    @GetMapping("/boj")
-    public Result<List<BojResponseDto>> findByBojTierDesc() {
-        List<BojResponseDto> allUserBojDesc = userService.findAllUserBojDesc();
-        return new Result<>(allUserBojDesc.size(), allUserBojDesc);
-    }
-
     @PostMapping("/test")
     public void test() throws IOException {
         githubService.updateUserGithubInfo();

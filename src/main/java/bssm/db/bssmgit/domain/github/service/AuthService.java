@@ -5,7 +5,7 @@ import bssm.db.bssmgit.domain.github.domain.repository.GitHubRepository;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.facade.UserFacade;
 import bssm.db.bssmgit.domain.user.service.UserService;
-import bssm.db.bssmgit.domain.user.web.dto.UserProfile;
+import bssm.db.bssmgit.domain.github.web.dto.GitHubIdDto;
 import bssm.db.bssmgit.domain.github.web.dto.request.OauthAttributes;
 import bssm.db.bssmgit.domain.user.web.dto.response.CookieResponseDto;
 import bssm.db.bssmgit.domain.github.web.dto.response.GitLoginResponseDto;
@@ -126,16 +126,16 @@ public class AuthService {
                 .bodyToMono(OauthTokenResponse.class)
                 .block();
 
-        UserProfile userProfile = getUserProfile(tokenResponse);
+        GitHubIdDto gitHubIdDto = getUserProfile(tokenResponse);
 
         GitHub userGitHub = userFacade.getCurrentUser().getGitHub();
         if (userGitHub.getGithubId() == null) {
 
-            userGitHub.updateGitId(userProfile.getGitId());
+            userGitHub.updateGitId(gitHubIdDto.getGitHubId());
 
-            int commits = getUserCommit(userProfile.getGitId());
-            String bio = github.getUser(userProfile.getGitId()).getBio();
-            String img = github.getUser(userProfile.getGitId()).getAvatarUrl();
+            int commits = getUserCommit(gitHubIdDto.getGitHubId());
+            String bio = github.getUser(gitHubIdDto.getGitHubId()).getBio();
+            String img = github.getUser(gitHubIdDto.getGitHubId()).getAvatarUrl();
 
             userGitHub.updateGitInfo(commits, bio, img);
             gitHubRepository.save(userGitHub);
@@ -195,7 +195,7 @@ public class AuthService {
         return formData;
     }
 
-    private UserProfile getUserProfile(OauthTokenResponse tokenResponse) {
+    private GitHubIdDto getUserProfile(OauthTokenResponse tokenResponse) {
         Map<String, Object> userAttributes = getUserAttributes(tokenResponse);
         return OauthAttributes.extract("github", userAttributes);
     }

@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.domain.boj.web.dto.response;
 
+import bssm.db.bssmgit.domain.boj.domain.Boj;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.web.dto.response.UserResponseDto;
 import lombok.Data;
@@ -16,14 +17,14 @@ public class BojResponseDto {
     private final String bojBio;
     private final UserResponseDto user;
 
-    public BojResponseDto(User user) {
-        this.bojId = user.getBojId();
-        this.solvedCount = user.getSolvedCount();
-        this.rating = user.getRating();
-        this.tier = user.getTier();
-        this.maxStreak = user.getMaxStreak();
-        this.bojImg = user.getBojImg();
-        this.bojBio = user.getBojBio();
+    public BojResponseDto(User user, Boj boj) {
+        this.bojId = boj.getBojId();
+        this.solvedCount = boj.getSolvedCount();
+        this.rating = boj.getRating();
+        this.tier = boj.getTier();
+        this.maxStreak = boj.getMaxStreak();
+        this.bojImg = boj.getBojImg();
+        this.bojBio = boj.getBojBio();
         this.user = new UserResponseDto(user);
     }
 }

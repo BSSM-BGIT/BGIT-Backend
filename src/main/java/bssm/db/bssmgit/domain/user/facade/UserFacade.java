@@ -69,7 +69,6 @@ public class UserFacade {
         return user;
     }
 
-    @Transactional
     private User bsmUserUpdate(User user, BsmResourceResponse dto) {
         BsmStudentResponse student = dto.getStudent();
         user.updateName(student.getName());
@@ -79,6 +78,7 @@ public class UserFacade {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User getAndUpdateOrElseSignUp(BsmResourceResponse resource, String token) {
         Optional<User> userOptional = findByEmail(resource.getEmail());
 
@@ -98,21 +98,6 @@ public class UserFacade {
 
     private Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    public List<GithubResponseDto> findAllUserGitDesc() {
-        return userRepository.findGitAll().stream()
-                .filter(u -> u.getGithubId() != null)
-                .filter(u -> u.getCommits() != null)
-                .map(GithubResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<BojResponseDto> findAllUserBojDesc() {
-        return userRepository.findBojAll().stream()
-                .filter(u -> u.getBoj.getBojId() != null)
-                .map(BojResponseDto::new)
-                .collect(Collectors.toList());
     }
 
     public User findById(Long id) {

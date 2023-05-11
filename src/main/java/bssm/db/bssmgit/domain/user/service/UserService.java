@@ -46,12 +46,4 @@ public class UserService {
     public UserResponseDto getUser() {
         return new UserResponseDto(userFacade.getCurrentUser());
     }
-
-    public List<GithubResponseDto> findAllUserGitDesc() {
-        return userFacade.findAllUserGitDesc();
-    }
-
-    public List<BojResponseDto> findAllUserBojDesc() {
-        return userFacade.findAllUserBojDesc();
-    }
 }

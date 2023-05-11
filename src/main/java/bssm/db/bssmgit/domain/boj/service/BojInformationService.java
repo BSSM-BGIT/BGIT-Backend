@@ -1,25 +1,19 @@
 package bssm.db.bssmgit.domain.boj.service;
 
-import bssm.db.bssmgit.domain.github.domain.repository.GitHubRepository;
-import bssm.db.bssmgit.domain.github.web.dto.response.GithubResponseDto;
-import lombok.AccessLevel;
+import bssm.db.bssmgit.domain.boj.domain.repository.CustomBojRepository;
+import bssm.db.bssmgit.domain.boj.web.dto.response.BojResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BojInformationService {
 
-    private final GitHubRepository gitHubRepository;
+    private final CustomBojRepository customBojRepository;
 
-    public List<GithubResponseDto> findAllUserGitDesc() {
-        return gitHubRepository.findAll().stream()
-                .filter(g -> g.getGithubId() != null)
-                .filter(g -> g.getCommits() != null)
-                .map(GithubResponseDto::new)
-                .collect(Collectors.toList());
+    public List<BojResponseDto> findAllUserBojDesc() {
+        return customBojRepository.findAllUserBojDesc();
     }
 }

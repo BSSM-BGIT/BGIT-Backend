@@ -24,6 +24,7 @@ public class CustomGithubRepositoryImpl implements CustomGithubRepository {
         return jpaQueryFactory
                 .select(Projections.constructor(GithubResponseDto.class, user, gitHub))
                 .from(gitHub)
+                .where(gitHub.githubId.isNotNull())
                 .innerJoin(user.gitHub)
                 .fetchJoin()
                 .distinct()
