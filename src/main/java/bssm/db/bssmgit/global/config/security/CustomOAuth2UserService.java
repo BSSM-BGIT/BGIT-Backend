@@ -1,5 +1,6 @@
 package bssm.db.bssmgit.global.config.security;
 
+import bssm.db.bssmgit.domain.github.domain.GitHub;
 import bssm.db.bssmgit.domain.user.domain.User;
 import bssm.db.bssmgit.domain.user.domain.type.Role;
 import bssm.db.bssmgit.domain.user.repository.UserRepository;
@@ -41,7 +42,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     public User saveOrUpdate(OAuth2User oAuth2User) {
         User user = User.builder()
-                .githubId(oAuth2User.getAttribute("login"))
+                .gitHub(GitHub.builder()
+                        .githubId(oAuth2User.getAttribute("login"))
+                        .build())
                 .role(Role.ROLE_BSSM)
                 .build();
 
